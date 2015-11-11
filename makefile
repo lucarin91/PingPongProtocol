@@ -1,5 +1,5 @@
-all: build main.cpp build/Peer.o build/Message.o
-	g++ -g -std=c++11 main.cpp -o main.out
+all: build main.cpp build/Peer.o
+	g++ -g -std=c++11 main.cpp  build/Peer.o Message.hpp -o main.out
 
 build/Peer.o: Peer.cpp
 	g++ -g -c -std=c++11 Peer.cpp -o build/Peer.o

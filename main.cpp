@@ -14,8 +14,10 @@ int main (int argc, char* argv[]){
   p2.addNeighbor(p1);
   peerVector.push_back(p2);
 
-  for (Peer p : peerVector){
-    p.doWork(2);
+  while (true){
+    for (Peer& p : peerVector){
+      p.doWork(0);
+    }
   }
 
   return 0;
