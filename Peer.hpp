@@ -10,9 +10,13 @@
 
 class Peer {
 public:
+  //Peer(const Peer& p) =delete;
+  //Peer(const Peer&&) =delete;
+  Peer& operator=(const Peer&) =delete;
 
-  Peer(int uid) : UID(uid), lastTime(time(0)) {}
-
+  //Peer(int uid) : UID(uid), lastTime(time(0)) {}
+  Peer();
+  Peer(int);
   void putMessage(const Message&);
   void doWork(int);
   int  getUID() const {
@@ -25,8 +29,10 @@ private:
 
   int UID;
   std::vector<Peer> neighbor;
-  std::unordered_map<int, Peer *> pingTable;
-  std::queue<Message> queue;
+  std::unordered_map<int, Peer*> pingTable;
+  std::queue<MessageWrapper> queue;
   time_t lastTime;
+
+  void sendPing();
 };
 #endif // ifndef Peer_h_
