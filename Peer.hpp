@@ -5,9 +5,11 @@
 #include <vector>
 #include <unordered_map>
 #include <queue>
+#include <memory>
 #include <time.h>
 #include "Message.hpp"
 
+using namespace std;
 class Peer {
 public:
   //Peer(const Peer& p) =delete;
@@ -16,24 +18,26 @@ public:
 
   //Peer(int uid) : UID(uid), lastTime(time(0)) {}
   Peer();
-  Peer(int);
-  void putMessage(int, const Message&);
+  void putMessage(Message*);
+  void forwordAll(Message*, int);
+  void forwordOne(Message*, int);
   void doWork(int);
   int  getUID() const {
-    return UID;
+    return this->UID;
   }
 
-  void addNeighbor(const Peer&);
+  void addNeighbor(Peer&);
 
 private:
 
   int UID;
   //std::vector<Peer> neighbor;
   std::unordered_map<int, Peer*> neighbor;
-  std::unordered_map<int, Peer*> pingTable;
-  std::queue<MessageWrapper> queue;
+  std::unordered_map<int, int> pingTable;
+  std::queue<Message*> queue;
   time_t lastTime;
-
+  static int masterId;
   void sendPing();
+  void log(string);
 };
 #endif // ifndef Peer_h_
