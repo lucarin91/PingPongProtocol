@@ -17,7 +17,7 @@ public:
   //Peer(int uid) : UID(uid), lastTime(time(0)) {}
   Peer();
   Peer(int);
-  void putMessage(const Message&);
+  void putMessage(int, const Message&);
   void doWork(int);
   int  getUID() const {
     return UID;
@@ -28,7 +28,8 @@ public:
 private:
 
   int UID;
-  std::vector<Peer> neighbor;
+  //std::vector<Peer> neighbor;
+  std::unordered_map<int, Peer*> neighbor;
   std::unordered_map<int, Peer*> pingTable;
   std::queue<MessageWrapper> queue;
   time_t lastTime;

@@ -14,7 +14,7 @@ void Peer::addNeighbor(const Peer& p){
   this->neighbor.push_back(p);
 }
 
-void Peer::putMessage(const Message& m){
+void Peer::putMessage(int senderId, const Message& m){
   this->queue.push(m);
 }
 
