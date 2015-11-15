@@ -5,29 +5,33 @@
 #include <iostream>
 #include <memory>
 #include <cmath>
-#include <time.h>
+#include <unistd.h>
+#include <libconfig.h++>
 #include "Peer.hpp"
 #include "Peer_p.hpp"
 #include "Logger.hpp"
 
 using namespace std;
+using namespace libconfig;
 
-class TopologyGen {
+template <class Peer_Type> class TopologyGen {
 public:
 
   TopologyGen(const TopologyGen&)            = delete;
   TopologyGen& operator=(const TopologyGen&) = delete;
   TopologyGen(TopologyGen&&)                 = delete;
 
-  TopologyGen(int, double);
-  TopologyGen(vector<Peer>, double);
+  //TopologyGen(int, double);
+  TopologyGen(Config& );
 
   void setLogger(int, shared_ptr<Logger>);
+  void startPing(int p);
   void forEach(function<void(Peer&)>);
+  void forEach(unsigned,function<void(Peer&)>);
   void print();
 
 private:
-
+  shared_ptr <Logger> logger;
   vector<Peer*> peers;
 
 };

@@ -2,6 +2,7 @@
 #define Logger_h_
 
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include "Message.hpp"
 
@@ -14,12 +15,14 @@ public:
   Logger& operator=(const Logger&) = delete;
   Logger(Logger&&) = default;
   Logger();
+  ~Logger();
   Logger(string);
-  void printLog(int, string) const;
-  void printLog(int, string, const Message&) const;
+  void printLog(string);
+  void printLog(int, string);
+  void printLog(int, string, const Message&);
 
 private:
-  string fileName;
+  ofstream file;
   bool stdout;
 };
 #endif // ifndef Logger_h_

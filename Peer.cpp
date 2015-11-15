@@ -4,21 +4,13 @@ using namespace std;
 int Peer::MASTER_ID = 0;
 
 Peer::Peer(int uid, shared_ptr<Logger>logger) : UID(uid), logger(logger) {
-  this->lastTime = time(0) + floor(rand() % 20);
-  cout << this->UID << " " << this->lastTime << endl;
+  this->lastTime = time(0) + rand() % 5;
+  //cout << this->UID << " " << this->lastTime << endl;
 }
 
 Peer::Peer(shared_ptr<Logger>logger) : Peer(++Peer::MASTER_ID, logger) {}
 
 Peer::Peer() : Peer(nullptr) {}
-
-// Peer::Peer(Peer&& p){
-//   this->UID = p.UID;
-//   this->neighbor = p.neighbor;
-//   this->pingTable = p.pingTable;
-//   this->queue = p.queue;
-//   this->lastTime = p.lastTime;
-//   }
 
 bool Peer::addNeighbor(Peer& p) {
   auto got = this->neighbor.find(p.getUID());
@@ -44,7 +36,7 @@ void Peer::putMessage(Message *m) {
 void Peer::afterSecond(int s, function<void()>f) {
   time_t now = time(0);
 
-  if (difftime(now, this->lastTime) > 5) {
+  if (difftime(now, this->lastTime) > rand()%8 + 2) {
     f();
     this->lastTime = now;
   }

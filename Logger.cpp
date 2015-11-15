@@ -4,14 +4,30 @@ using namespace std;
 
 Logger::Logger() : stdout(true) {}
 
-Logger::Logger(string filename) : fileName(filename), stdout(false) {}
+Logger::Logger(string filename) {
+  this->stdout = false;
+  this->file.open (filename);
+  this->file << "PING <-logfile-> PONG" << endl;
+}
 
-void Logger::printLog(int peer, string s) const{
+Logger::~Logger(){
+  this->file.close();
+}
+
+void Logger::printLog(int peer, string s){
+  ostringstream str;
+  str << "peer " << peer << " >> " << s;
+  printLog(str.str());
+}
+
+void Logger::printLog(string s){
   if (this->stdout) {
-    cout << "peer " << peer << " >> " << s << endl;
+    cout << s << endl;
+  }else{
+    this->file << s << endl;
   }
 }
 
-void Logger::printLog(int peer, string s, const Message& m) const {
+void Logger::printLog(int peer, string s, const Message& m) {
   printLog(peer, s + " " + m.toString());
 }

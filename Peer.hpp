@@ -14,7 +14,6 @@
 
 using namespace std;
 
-
 class Peer {
 public:
 
@@ -41,12 +40,37 @@ public:
   bool addNeighbor(Peer&);
   void setLogger(shared_ptr<Logger>);
 
-  std::unordered_map<int, Peer *> neighbor;
+  typedef typename std::unordered_map<int, Peer *>::iterator       iterator;
+  typedef typename std::unordered_map<int, Peer *>::const_iterator const_iterator;
+
+  iterator begin() {
+    return neighbor.begin();
+  }
+
+  const_iterator begin() const {
+    return neighbor.begin();
+  }
+
+  const_iterator cbegin() const {
+    return neighbor.cbegin();
+  }
+
+  iterator end() {
+    return neighbor.end();
+  }
+
+  const_iterator end() const {
+    return neighbor.end();
+  }
+
+  const_iterator cend() const {
+    return neighbor.cend();
+  }
+
 protected:
 
   int UID;
-
-  // std::vector<Peer> neighbor;
+  std::unordered_map<int, Peer *> neighbor;
   std::unordered_map<int, int>    pingTable;
   std::queue<Message *> queue;
   time_t lastTime;
