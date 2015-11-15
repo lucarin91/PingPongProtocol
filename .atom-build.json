@@ -1,6 +1,6 @@
 {
   "cmd": "make",
   "name": "buildc++",
-  "args": [],
+  "args": ["clean","all"],
   "sh": true
 }

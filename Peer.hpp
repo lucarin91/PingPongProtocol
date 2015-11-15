@@ -7,37 +7,56 @@
 #include <queue>
 #include <memory>
 #include <time.h>
+#include <string>
+#include <cmath>
 #include "Message.hpp"
+#include "Logger.hpp"
 
 using namespace std;
+
+
 class Peer {
 public:
-  //Peer(const Peer& p) =delete;
-  //Peer(const Peer&&) =delete;
-  Peer& operator=(const Peer&) =delete;
 
-  //Peer(int uid) : UID(uid), lastTime(time(0)) {}
+  Peer(const Peer&)            = delete;
+  Peer& operator=(const Peer&) = delete;
+  Peer(Peer&&)                 = delete;
+
   Peer();
-  void putMessage(Message*);
-  void forwordAll(Message*, int);
-  void forwordOne(Message*, int);
-  void doWork(int);
-  int  getUID() const {
+  Peer(int uid,
+       shared_ptr<Logger>);
+  Peer(shared_ptr<Logger>);
+
+  void         putMessage(Message *);
+  void         forwordAll(Message *,
+                          int);
+  void         forwordOne(Message *,
+                          int);
+  virtual void work(int);
+  int          getUID() const {
     return this->UID;
   }
 
-  void addNeighbor(Peer&);
+  void sendPing();
+  bool addNeighbor(Peer&);
+  void setLogger(shared_ptr<Logger>);
 
-private:
+  std::unordered_map<int, Peer *> neighbor;
+protected:
 
   int UID;
-  //std::vector<Peer> neighbor;
-  std::unordered_map<int, Peer*> neighbor;
-  std::unordered_map<int, int> pingTable;
-  std::queue<Message*> queue;
+
+  // std::vector<Peer> neighbor;
+  std::unordered_map<int, int>    pingTable;
+  std::queue<Message *> queue;
   time_t lastTime;
-  static int masterId;
-  void sendPing();
+  static int MASTER_ID;
+  shared_ptr<Logger> logger;
+  void afterSecond(int,
+                   function<void()>);
+  void doWork(int,
+              function<void()>);
   void log(string);
+  void log(string, const Message &m);
 };
 #endif // ifndef Peer_h_
