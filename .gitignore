@@ -1,5 +1,5 @@
 *.out
-build
+tmp
 *.gch
 *.o
 *.log

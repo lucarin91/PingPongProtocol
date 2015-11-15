@@ -4,6 +4,7 @@
 #include <libconfig.h++>
 #include "Peer.hpp"
 #include "Peer_p.hpp"
+#include "Peer_pp.hpp"
 #include "Logger.hpp"
 #include "TopologyGen.hpp"
 #include "TopologyGen.cpp"
@@ -31,7 +32,7 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  TopologyGen<Peer_p> T(cfg);
+  TopologyGen<Peer_pp> T(cfg);
 
   T.print();
 
