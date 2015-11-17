@@ -76,8 +76,7 @@ protected:
   time_t lastTime;
   static int MASTER_ID;
   shared_ptr<Logger> logger;
-  void afterSecond(int,
-                   function<void()>);
+  void afterSecond(int,function<void(time_t)>);
   void doWork(int,
               function<void()>);
   void log(string);

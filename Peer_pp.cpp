@@ -10,22 +10,23 @@ Peer_pp::Peer_pp() : Peer() {}
 
 void Peer_pp::work(int quanto) {
   // Send Ping
-  afterSecond(3, [&]() -> void {
+  afterSecond(3, [&](time_t) -> void {
     log("send Pings...");
     sendPing();
   });
 
-  afterSecond(8, [&]() -> void {
+  afterSecond(60, [&](time_t now) -> void {
+    time_t elapse = 30;
+    log("FILTER PONG CACHE");
+    for (auto p = this->timeList.begin(); p != this->timeList.end();) {
+      this->pongCache[(*p).neighbor_id].erase((*p).msg_id);
 
-
-    if (!this->timeHeap.empty()) {
-      log("filter PONG cache");
-      HeapNode p = *this->timeHeap.top();
-
-      while (!this->timeHeap.empty() && p.time > time(0) - 8) {
-        this->timeHeap.pop();
-        this->pongCache[p.neighbor_id].erase(p.msg_id);
-        p = *this->timeHeap.top();
+      if ((*p).tstamp < now - elapse){
+        log("\tremoved"+(*p).toString());
+        p = this->timeList.erase(p);
+      }else{
+        log("\tmantened"+(*p).toString());
+        ++p;
       }
     }
   });
@@ -123,7 +124,6 @@ void Peer_pp::addPongCache(int neighbor, const Message& m) {
     map.emplace(m.id, unique_ptr<Message>(new Message(m)));
     this->pongCache.emplace(neighbor, move(map));
   }
-  log("\tadd to timeHeap");
-  this->timeHeap.push(unique_ptr<HeapNode>(new HeapNode(time(0), m.id,
-                                                        m.lastSender)));
+  log("\tadd to timeList");
+  this->timeList.emplace(this->timeList.end(),time(0), m.id, m.lastSender);
 }

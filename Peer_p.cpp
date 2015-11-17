@@ -11,7 +11,7 @@ Peer_p::Peer_p() : Peer(nullptr) {}
 
 void Peer_p::work(int quanto) {
   // Send Ping
-  afterSecond(3, [&]() -> void {
+  afterSecond(3, [&](time_t) -> void {
     log("send Pings...");
     sendPing();
   });

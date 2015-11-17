@@ -33,11 +33,11 @@ void Peer::putMessage(Message *m) {
   // this->queue.empty() <<endl;
 }
 
-void Peer::afterSecond(int s, function<void()>f) {
+void Peer::afterSecond(int s, function<void(time_t now)>f) {
   time_t now = time(0);
 
   if (difftime(now, this->lastTime) > rand()%8 + 2) {
-    f();
+    f(now);
     this->lastTime = now;
   }
 }

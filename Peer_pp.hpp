@@ -4,25 +4,42 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
-#include <queue>
+#include <list>
 #include <memory>
 #include <time.h>
 #include <string>
 #include <cmath>
 #include "Peer.hpp"
+
 // #include "Peer_p.hpp"
 #include "Message.hpp"
 #include "Logger.hpp"
 
 using namespace std;
 
-struct HeapNode{
-  int time;
-  int msg_id;
-  int neighbor_id;
-  HeapNode(int time, int msg_id, int neightbot_id) : time(time), msg_id(msg_id), neighbor_id(neighbor_id) {}
-  bool operator<(const HeapNode& b) {
-    return this->time > b.time;
+struct ListNode {
+  time_t tstamp;
+  int    msg_id;
+  int    neighbor_id;
+  ListNode(time_t tstamp, int msg_id, int neighbor_id) : tstamp(tstamp), msg_id(
+      msg_id),
+    neighbor_id(neighbor_id) {}
+
+  bool operator<(const ListNode& b) {
+    return this->tstamp < b.tstamp;
+  }
+
+  bool operator>(const ListNode& b) {
+    return this->tstamp > b.tstamp;
+  }
+
+  string toString() {
+    ostringstream stream;
+
+    stream << "time: " << (time(0) - this->tstamp) << " msg_id: " << msg_id <<
+    " neighbor_id: " <<
+      neighbor_id;
+    return stream.str();
   }
 };
 
@@ -41,10 +58,13 @@ public:
   void work(int) override;
 
 protected:
+
   static const int K = 3;
-  unordered_map<int, unordered_map<int, unique_ptr<Message>> > pongCache;
-  priority_queue<unique_ptr<HeapNode>> timeHeap;
-  void addPongCache(int, const Message&);
-  void sendChachedPong(int, Message&);
+  unordered_map<int, unordered_map<int, unique_ptr<Message> > > pongCache;
+  list<ListNode> timeList;
+  void addPongCache(int,
+                    const Message&);
+  void sendChachedPong(int,
+                       Message&);
 };
 #endif // ifndef Peer_pp_h_
