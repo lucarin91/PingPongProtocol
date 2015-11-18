@@ -9,6 +9,40 @@ Peer_p::Peer_p(shared_ptr<Logger>logger) : Peer(logger) {}
 
 Peer_p::Peer_p() : Peer(nullptr) {}
 
+
+void Peer_p::onValidPing(Message& msg, int sender) {
+  if (sender != getUID()) {
+    forwordOne(new Message(msg.id, MsgType::PONG, getUID()), sender);
+    sendChachedPong(sender, &msg);
+  } else {
+    delete &msg;
+  }
+}
+
+void Peer_p::onValidPong(Message& msg, int sender) {
+  if (sender != getUID()) {
+    forwordOne(&msg, sender);
+  } else {
+    delete &msg;
+  }
+}
+
+void Peer_p::onErrorMsg(Message& msg, ErrorType error, int) {
+  switch (error) {
+  case ErrorType::ALREADY_FORWARDED_PING:
+    break;
+
+  case ErrorType::EXPIRED_MSG:
+    break;
+
+  case ErrorType::UNOKNOW_PONG:
+    break;
+  }
+  delete &msg;
+}
+
+void Peer_p::onWork() {}
+
 void Peer_p::work(int quanto) {
   // Send Ping
   afterSecond(3, [&](time_t) -> void {

@@ -22,7 +22,7 @@ public:
 
   Peer(const Peer&)            = delete;
   Peer& operator=(const Peer&) = delete;
-  Peer(Peer&&)                 = delete;
+  Peer(Peer &&)                = delete;
 
   Peer();
   Peer(int uid,
@@ -70,24 +70,32 @@ public:
     return neighbor.cend();
   }
 
-protected:
+private:
 
   int UID;
-  std::unordered_map<int, Peer *> neighbor;
-  std::unordered_map<int, int>    pingTable;
-  std::queue<Message *> queue;
-  time_t lastTime;
-  static int MASTER_ID;
-  shared_ptr<Logger> logger;
-  void afterSecond(int,function<void(time_t)>);
+  void checkTimers();
   void doWork(int,
               function<void()>);
+  static int MASTER_ID;
+  std::queue<Message *> queue;
+
+  unordered_map<time_t, function<void(time_t)> > timers;
+  shared_ptr<Logger> logger;
+  unordered_map<int, Peer *> neighbor;
+  unordered_map<int, int>    pingTable;
   void log(string);
   void log(string, const Message &m);
 
-  void Peer::onValidPing(Message&, bool);
-  void Peer::onValidPong(Message&, bool);
-  void Peer::onErrorMsg(Message&,ErrorType);
+protected:
 
+  void onValidPing(Message&,
+                   int);
+  void onValidPong(Message&,
+                   int);
+  void onErrorMsg(Message &, ErrorType, int);
+  void onWork();
+
+  void addTimer(int,
+                function<void(time_t)>);
 };
 #endif // ifndef Peer_h_

@@ -4,11 +4,7 @@ using namespace std;
 int Peer::MASTER_ID = 0;
 
 Peer::Peer(int               uid,
-           shared_ptr<Logger>logger) : UID(uid), logger(logger) {
-  this->lastTime = time(0) + rand() % 5;
-
-  // cout << this->UID << " " << this->lastTime << endl;
-}
+           shared_ptr<Logger>logger) : UID(uid), logger(logger) {}
 
 Peer::Peer(shared_ptr<Logger>logger) : Peer(++Peer::MASTER_ID, logger) {}
 
@@ -35,36 +31,39 @@ void Peer::putMessage(Message *m) {
   // this->queue.empty() <<endl;
 }
 
-void Peer::afterSecond(int s, function<void(time_t now)>f) {
+void Peer::checkTimers() {
   time_t now = time(0);
 
-  if (difftime(now, this->lastTime) > rand() % 8 + 2) {
-    f(now);
-    this->lastTime = now;
+  for (auto p = this->timers.begin(); p != this->timers.end();) {
+    if (now == (*p).first) {
+      p->second(now);
+      this->timers.erase(p);
+    } else ++p;
   }
 }
 
-void Peer::onValidPing(Message& m, bool isMine) {
-  if (!isMine) {
-    msg->lastSender = this->UID;
-    this->pingTable.emplace(msg->id, sender);
-    forwordAll(msg, sender);
-    forwordOne(new Message(msg->id, MsgType::PONG, this->UID), sender);
+void Peer::addTimer(int sec, function<void(time_t)>f) {
+  this->timers.emplace(time(0) + sec, f);
+}
+
+void Peer::onValidPing(Message& msg, int sender) {
+  if (sender != getUID()) {
+    forwordAll(&msg, sender);
+    forwordOne(new Message(msg.id, MsgType::PONG, getUID()), sender);
   } else {
-    delete msg;
+    delete &msg;
   }
 }
 
-void Peer::onValidPong(Message& m, bool isMine) {
-  if (!isMine) {
-    msg->lastSender = this->UID;
-    forwordOne(msg, got->second);
+void Peer::onValidPong(Message& msg, int sender) {
+  if (sender != getUID()) {
+    forwordOne(&msg, sender);
   } else {
-    delete msg;
+    delete &msg;
   }
 }
 
-void Peer::onErrorMsg(Message& m, ErrorType error) {
+void Peer::onErrorMsg(Message& msg, ErrorType error, int) {
   switch (error) {
   case ErrorType::ALREADY_FORWARDED_PING:
     break;
@@ -75,20 +74,22 @@ void Peer::onErrorMsg(Message& m, ErrorType error) {
   case ErrorType::UNOKNOW_PONG:
     break;
   }
-  delete msg;
+  delete &msg;
 }
 
-void Peer::onWork(int){
-
-}
+void Peer::onWork() {}
 
 void Peer::work(int quanto) {
+  checkTimers();
+  onWork();
+
   // WORK
   for (int i = 0; i < quanto; ++i) {
     if (this->queue.size() > 0) {
       Message *msg = this->queue.front();
       this->queue.pop();
       int sender = msg->lastSender;
+      msg->lastSender = this->UID;
       msg->TTL--;
       msg->HOPS++;
 
@@ -100,13 +101,14 @@ void Peer::work(int quanto) {
 
           if (got == this->pingTable.end()) {
             log("received valid msg", *msg);
-            onValidPing(msg, false);
+            this->pingTable.emplace(msg->id, sender);
+            onValidPing(*msg, sender);
           } else if (got->second != -1) {
             log("discarted already foorword this PING", *msg);
-            onErrorMsg(msg, ErrorType::ALREADY_FORWARDED_PING);
+            onErrorMsg(*msg, ErrorType::ALREADY_FORWARDED_PING, sender);
           } else {
             log("discarted is my PING!", *msg);
-            onValidPing(msg, true);
+            onValidPing(*msg, sender);
           }
           break;
 
@@ -115,20 +117,20 @@ void Peer::work(int quanto) {
           if (got != this->pingTable.end()) {
             if (got->second != -1) {
               log("received valid msg", *msg);
-              onValidPong(msg, false)
+              onValidPong(*msg, sender);
             } else {
               log("received my PONG!", *msg);
-              onValidPong(msg, true);
+              onValidPong(*msg, sender);
             }
           } else {
             log("error: PONG doesn't found in pingTable", *msg);
-            onErrorMsg(msg, ErrorType::UNOKNOW_PONG);
+            onErrorMsg(*msg, ErrorType::UNOKNOW_PONG, sender);
           }
           break;
         }
       } else {
         log("message discarded!", *msg);
-        onErrorMsg(msg, ErrorType::EXPIRED_MSG);
+        onErrorMsg(*msg, ErrorType::EXPIRED_MSG, sender);
       }
     }
   }
