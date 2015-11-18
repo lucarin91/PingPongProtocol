@@ -14,6 +14,9 @@
 
 using namespace std;
 
+enum class ErrorType { ALREADY_FORWARDED_PING, UNOKNOW_PONG, EXPIRED_MSG };
+
+
 class Peer {
 public:
 
@@ -81,5 +84,10 @@ protected:
               function<void()>);
   void log(string);
   void log(string, const Message &m);
+
+  void Peer::onValidPing(Message&, bool);
+  void Peer::onValidPong(Message&, bool);
+  void Peer::onErrorMsg(Message&,ErrorType);
+
 };
 #endif // ifndef Peer_h_

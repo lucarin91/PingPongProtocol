@@ -3,9 +3,11 @@
 using namespace std;
 int Peer::MASTER_ID = 0;
 
-Peer::Peer(int uid, shared_ptr<Logger>logger) : UID(uid), logger(logger) {
+Peer::Peer(int               uid,
+           shared_ptr<Logger>logger) : UID(uid), logger(logger) {
   this->lastTime = time(0) + rand() % 5;
-  //cout << this->UID << " " << this->lastTime << endl;
+
+  // cout << this->UID << " " << this->lastTime << endl;
 }
 
 Peer::Peer(shared_ptr<Logger>logger) : Peer(++Peer::MASTER_ID, logger) {}
@@ -14,16 +16,16 @@ Peer::Peer() : Peer(nullptr) {}
 
 bool Peer::addNeighbor(Peer& p) {
   auto got = this->neighbor.find(p.getUID());
-  if (this->UID != p.UID && got == this->neighbor.end()) {
+
+  if ((this->UID != p.UID) && (got == this->neighbor.end())) {
     this->neighbor.emplace(p.getUID(), &p);
     p.neighbor.emplace(this->UID, this);
     return true;
-  }else
-    return false;
+  } else return false;
 }
 
-void Peer::setLogger(shared_ptr<Logger> l){
-    this->logger = l;
+void Peer::setLogger(shared_ptr<Logger>l) {
+  this->logger = l;
 }
 
 void Peer::putMessage(Message *m) {
@@ -36,21 +38,53 @@ void Peer::putMessage(Message *m) {
 void Peer::afterSecond(int s, function<void(time_t now)>f) {
   time_t now = time(0);
 
-  if (difftime(now, this->lastTime) > rand()%8 + 2) {
+  if (difftime(now, this->lastTime) > rand() % 8 + 2) {
     f(now);
     this->lastTime = now;
   }
 }
 
-void Peer::doWork(int quanto, function<void()>f) {
-  for (int i = 0; i < quanto; ++i) {
-    f();
+void Peer::onValidPing(Message& m, bool isMine) {
+  if (!isMine) {
+    msg->lastSender = this->UID;
+    this->pingTable.emplace(msg->id, sender);
+    forwordAll(msg, sender);
+    forwordOne(new Message(msg->id, MsgType::PONG, this->UID), sender);
+  } else {
+    delete msg;
   }
+}
+
+void Peer::onValidPong(Message& m, bool isMine) {
+  if (!isMine) {
+    msg->lastSender = this->UID;
+    forwordOne(msg, got->second);
+  } else {
+    delete msg;
+  }
+}
+
+void Peer::onErrorMsg(Message& m, ErrorType error) {
+  switch (error) {
+  case ErrorType::ALREADY_FORWARDED_PING:
+    break;
+
+  case ErrorType::EXPIRED_MSG:
+    break;
+
+  case ErrorType::UNOKNOW_PONG:
+    break;
+  }
+  delete msg;
+}
+
+void Peer::onWork(int){
+
 }
 
 void Peer::work(int quanto) {
   // WORK
-  doWork(quanto, [&]() -> void {
+  for (int i = 0; i < quanto; ++i) {
     if (this->queue.size() > 0) {
       Message *msg = this->queue.front();
       this->queue.pop();
@@ -66,17 +100,13 @@ void Peer::work(int quanto) {
 
           if (got == this->pingTable.end()) {
             log("received valid msg", *msg);
-            msg->lastSender = this->UID;
-            this->pingTable.emplace(msg->id, sender);
-            forwordAll(msg, sender);
-            forwordOne(new Message(msg->id, MsgType::PONG, this->UID), sender);
+            onValidPing(msg, false);
           } else if (got->second != -1) {
             log("discarted already foorword this PING", *msg);
+            onErrorMsg(msg, ErrorType::ALREADY_FORWARDED_PING);
           } else {
             log("discarted is my PING!", *msg);
-
-            // this->pingTable.erase(got->first);
-            delete msg;
+            onValidPing(msg, true);
           }
           break;
 
@@ -84,26 +114,24 @@ void Peer::work(int quanto) {
 
           if (got != this->pingTable.end()) {
             if (got->second != -1) {
-              // this->pingTable.erase(got->first);
               log("received valid msg", *msg);
-              msg->lastSender = this->UID;
-              forwordOne(msg, got->second);
+              onValidPong(msg, false)
             } else {
               log("received my PONG!", *msg);
-              delete msg;
+              onValidPong(msg, true);
             }
           } else {
             log("error: PONG doesn't found in pingTable", *msg);
-            delete msg;
+            onErrorMsg(msg, ErrorType::UNOKNOW_PONG);
           }
           break;
         }
       } else {
         log("message discarded!", *msg);
-        delete msg;
+        onErrorMsg(msg, ErrorType::EXPIRED_MSG);
       }
     }
-  });
+  }
 }
 
 void Peer::forwordAll(Message *m, int notSendId) {
