@@ -10,8 +10,8 @@
 #include <string>
 #include <cmath>
 #include "Peer.hpp"
+#include "Peer_p.hpp"
 
-// #include "Peer_p.hpp"
 #include "Message.hpp"
 #include "Logger.hpp"
 
@@ -37,13 +37,13 @@ struct ListNode {
     ostringstream stream;
 
     stream << "time: " << (time(0) - this->tstamp) << " msg_id: " << msg_id <<
-    " neighbor_id: " <<
+      " neighbor_id: " <<
       neighbor_id;
     return stream.str();
   }
 };
 
-class Peer_pp : public Peer {
+class Peer_pp : public Peer_p {
 public:
 
   Peer_pp(const Peer_pp&)            = delete;
@@ -55,16 +55,25 @@ public:
           shared_ptr<Logger>);
   Peer_pp(shared_ptr<Logger>);
 
-  void work(int) override;
-
 protected:
+
+  //
+  // void onValidPing(Message&,
+  //                  int) override;
+  // void onValidPong(Message&,
+  //                  int) override;
+
+  void addPongCache(int,
+                    const Message&) override;
+  void sendChachedPong(int,
+                       const Message&) override;
+
+private:
 
   static const int K = 3;
   unordered_map<int, unordered_map<int, unique_ptr<Message> > > pongCache;
   list<ListNode> timeList;
-  void addPongCache(int,
-                    const Message&);
-  void sendChachedPong(int,
-                       Message&);
+
+  void initTimer();
 };
 #endif // ifndef Peer_pp_h_

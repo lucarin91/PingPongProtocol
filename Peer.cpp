@@ -35,14 +35,17 @@ void Peer::checkTimers() {
   time_t now = time(0);
 
   for (auto p = this->timers.begin(); p != this->timers.end();) {
-    if (now == (*p).first) {
+    log("check timer");
+    if (now == p->first) {
+      log("timer elapse");
       p->second(now);
       this->timers.erase(p);
     } else ++p;
   }
 }
 
-void Peer::addTimer(int sec, function<void(time_t)>f) {
+void Peer::addTimer(time_t sec, function<void(time_t)>f) {
+  log("add timer "+to_string(sec));
   this->timers.emplace(time(0) + sec, f);
 }
 

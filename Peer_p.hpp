@@ -20,33 +20,29 @@ public:
 
   Peer_p(const Peer_p&)            = delete;
   Peer_p& operator=(const Peer_p&) = delete;
-  Peer_p(Peer_p &&)                = delete;
+  Peer_p(Peer_p&&)                 = delete;
 
   Peer_p();
   Peer_p(int uid,
          shared_ptr<Logger>);
   Peer_p(shared_ptr<Logger>);
 
-  void work(int) override;
+protected:
+
+  void         onValidPing(Message&,
+                           int) override;
+  void         onValidPong(Message&,
+                           int) override;
+
+  virtual void addPongCache(int,
+                            const Message&);
+  virtual void sendChachedPong(int,
+                               const Message&);
 
 private:
 
   std::unordered_map<int, vector<unique_ptr<Message> > > pongCache;
-  void addPongCache(int,
-                    const Message&);
-  void sendChachedPong(int            to,
-                       const Message& msg);
 
-protected:
-
-  void onValidPing(Message&,
-                   int) override;
-  void onValidPong(Message&,
-                   int) override;
-  void onErrorMsg(Message &, ErrorType, int) override;
-  void onWork() override;
-
-  void addTimer(int,
-                function<void(time_t)>) override;
+  void initTimer();
 };
 #endif // ifndef Peer_p_h_

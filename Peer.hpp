@@ -22,20 +22,20 @@ public:
 
   Peer(const Peer&)            = delete;
   Peer& operator=(const Peer&) = delete;
-  Peer(Peer &&)                = delete;
+  Peer(Peer&&)                 = delete;
 
   Peer();
   Peer(int uid,
        shared_ptr<Logger>);
   Peer(shared_ptr<Logger>);
 
-  void         putMessage(Message *);
-  void         forwordAll(Message *,
-                          int);
-  void         forwordOne(Message *,
-                          int);
-  virtual void work(int);
-  int          getUID() const {
+  void putMessage(Message *);
+  void forwordAll(Message *,
+                  int);
+  void forwordOne(Message *,
+                  int);
+  void work(int);
+  int  getUID() const {
     return this->UID;
   }
 
@@ -70,32 +70,32 @@ public:
     return neighbor.cend();
   }
 
-private:
+protected:
+
+  virtual void onValidPing(Message&,
+                           int);
+  virtual void onValidPong(Message&,
+                           int);
+  virtual void onErrorMsg(Message &, ErrorType, int);
+  virtual void onWork();
+  void         addTimer(time_t,
+                        function<void(time_t)>);
+
+  void log(string);
+  void log(string, const Message &m);
+  unordered_map<int, Peer *> neighbor;
+
+//private:
 
   int UID;
   void checkTimers();
-  void doWork(int,
-              function<void()>);
+
   static int MASTER_ID;
   std::queue<Message *> queue;
 
   unordered_map<time_t, function<void(time_t)> > timers;
   shared_ptr<Logger> logger;
-  unordered_map<int, Peer *> neighbor;
-  unordered_map<int, int>    pingTable;
-  void log(string);
-  void log(string, const Message &m);
 
-protected:
-
-  void onValidPing(Message&,
-                   int);
-  void onValidPong(Message&,
-                   int);
-  void onErrorMsg(Message &, ErrorType, int);
-  void onWork();
-
-  void addTimer(int,
-                function<void(time_t)>);
+  unordered_map<int, int> pingTable;
 };
 #endif // ifndef Peer_h_

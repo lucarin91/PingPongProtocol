@@ -54,7 +54,8 @@ int main(int argc, char *argv[]) {
   p2.addNeighbor(p4);
   p2.addNeighbor(p3);
 
-  // p2.addNeighbor(p1);
+  //p2.addNeighbor(p1);
+  //p2.sendPing();
 
   std::vector<unique_ptr<Peer> > peerVector;
   peerVector.push_back(unique_ptr<Peer>(&p2));

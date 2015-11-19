@@ -2,18 +2,37 @@
 
 using namespace std;
 
-Peer_p::Peer_p(int uid, shared_ptr<Logger>logger) : Peer(uid,logger) {
+// void Peer_p::initTimer() {
+//   function<void(time_t)> f = [&](time_t) -> void {
+//                                log("send Pings...");
+//                                sendPing();
+//                                addTimer(3, f);
+//                              };
+//   addTimer(3, f);
+// }
+
+void Peer_p::initTimer() {
+  log("send Pings...");
+  sendPing();
+  addTimer(3, initTimer);
 }
 
-Peer_p::Peer_p(shared_ptr<Logger>logger) : Peer(logger) {}
+Peer_p::Peer_p(int uid, shared_ptr<Logger>logger) : Peer(uid, logger) {
+  addTimer(3, initTimer);
+}
 
-Peer_p::Peer_p() : Peer(nullptr) {}
+Peer_p::Peer_p(shared_ptr<Logger>logger) : Peer(logger) {
+  initTimer();
+}
 
+Peer_p::Peer_p() : Peer(nullptr) {
+  initTimer();
+}
 
 void Peer_p::onValidPing(Message& msg, int sender) {
   if (sender != getUID()) {
     forwordOne(new Message(msg.id, MsgType::PONG, getUID()), sender);
-    sendChachedPong(sender, &msg);
+    sendChachedPong(sender, msg);
   } else {
     delete &msg;
   }
@@ -21,116 +40,41 @@ void Peer_p::onValidPing(Message& msg, int sender) {
 
 void Peer_p::onValidPong(Message& msg, int sender) {
   if (sender != getUID()) {
+    addPongCache(sender, msg);
     forwordOne(&msg, sender);
   } else {
     delete &msg;
   }
 }
 
-void Peer_p::onErrorMsg(Message& msg, ErrorType error, int) {
-  switch (error) {
-  case ErrorType::ALREADY_FORWARDED_PING:
-    break;
-
-  case ErrorType::EXPIRED_MSG:
-    break;
-
-  case ErrorType::UNOKNOW_PONG:
-    break;
-  }
-  delete &msg;
-}
-
-void Peer_p::onWork() {}
-
-void Peer_p::work(int quanto) {
-  // Send Ping
-  afterSecond(3, [&](time_t) -> void {
-    log("send Pings...");
-    sendPing();
-  });
-
-  // WORK
-  doWork(quanto, [&]()->void {
-    if (this->queue.size() > 0) {
-      Message *msg = this->queue.front();
-      this->queue.pop();
-      int sender = msg->lastSender;
-      msg->TTL--;
-      msg->HOPS++;
-
-      auto got = this->pingTable.find(msg->id);
-
-      if (msg->TTL > 0) {
-        switch (msg->type) {
-        case MsgType::PING:
-          if (got == this->pingTable.end()) {
-            log("received valid msg", *msg);
-
-            this->pingTable.emplace(msg->id, sender);
-            forwordOne(new Message(msg->id, MsgType::PONG, this->UID), sender);
-
-            msg->lastSender = this->UID;
-            sendChachedPong(sender, *msg);
-          } else if (got->second != -1) {
-            log("discarted already foorword this PING", *msg);
-          } else {
-            log("discarted is my PING!", *msg);
-            delete msg;
-          }
-          break;
-
-        case MsgType::PONG:
-
-          if (got != this->pingTable.end()) {
-            if (got->second != -1) {
-              // this->pingTable.erase(got->first);
-              log("received valid msg", *msg);
-              msg->lastSender = this->UID;
-              addPongCache(sender, *msg);
-              forwordOne(msg, got->second);
-            } else {
-              log("received my PONG!", *msg);
-              delete msg;
-            }
-          } else {
-            log("error: PONG doesn't found in pingTable", *msg);
-            delete msg;
-          }
-          break;
-        }
-      } else {
-        log("message discarded!", *msg);
-        delete msg;
-      }
-    }
-  });
-}
-
-void Peer_p::addPongCache(int neighbor, const Message& m){
+void Peer_p::addPongCache(int neighbor, const Message& m) {
   auto got = this->pongCache.find(neighbor);
-  log ("\tadd PONG to the cache", m);
-  if (got != this->pongCache.end()){
-    log ("\tadd to existing list", m);
+
+  log("\tadd PONG to the cache", m);
+
+  if (got != this->pongCache.end()) {
+    log("\tadd to existing list", m);
     got->second.push_back(unique_ptr<Message>(new Message(m)));
-  }else{
-    log ("\tcreate a new list", m);
-    vector<unique_ptr<Message>> v;
+  } else {
+    log("\tcreate a new list", m);
+    vector<unique_ptr<Message> > v;
     v.push_back(unique_ptr<Message>(new Message(m)));
     this->pongCache.emplace(neighbor, move(v));
   }
 }
 
-void Peer_p::sendChachedPong(int to, const Message& m){
+void Peer_p::sendChachedPong(int to, const Message& m) {
   for (auto& n : this->neighbor) {
-    if ( n.first != to){
+    if (n.first != to) {
       auto got = this->pongCache.find(n.first);
-      if (got != this->pongCache.end()){
-        for(auto& pong : got->second){
+
+      if (got != this->pongCache.end()) {
+        for (auto& pong : got->second) {
           log("\treply with cached PONG!", *pong);
-          forwordOne(new Message(m.id, MsgType::PONG, pong->originalSender, this->UID), to);
+          forwordOne(new Message(m.id, MsgType::PONG, pong->originalSender,
+                                 getUID()), to);
         }
-      }else{
+      } else {
         log("\tforword PING!", m);
         n.second->putMessage(new Message(m));
       }
