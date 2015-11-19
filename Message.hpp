@@ -9,8 +9,12 @@ using namespace std;
 enum class MsgType { PING, PONG };
 
 class Message {
+  static int MASTER_ID;
+  static const int DEFAULT_TTL = 4;
+
 public:
-  int     id;
+
+  int id;
   MsgType type;
   int     TTL;
   int     HOPS;
@@ -32,22 +36,10 @@ public:
 
   Message(const Message& m);
 
-  string typeToString() const;
-  string toString() const;
-
-private:
-
-  static int       MASTER_ID;
-  static const int DEFAULT_TTL = 4;
+  string           typeToString() const;
+  string           toString() const;
+  static const int getNextID() {
+    return ++MASTER_ID;
+  }
 };
-
-// struct MessageWrapper {
-//   Message *msg;
-//   int      idSender;
-//   MessageWrapper(int idSender, Message *msg) : msg(msg), idSender(idSender)
-// {}
-//
-//   // MessageWrapper() {}
-// };
-
 #endif // ifndef Message_h_

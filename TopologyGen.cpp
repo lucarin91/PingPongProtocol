@@ -4,8 +4,9 @@ using namespace std;
 using namespace libconfig;
 
 template<class Peer_Type>
-TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr){
-  srand(time(0));
+TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr),
+                                                   counterMsg(0) {
+    srand(time(0));
   unsigned n;
   double   c;
   try {
@@ -14,6 +15,10 @@ TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr){
 
     c = cfg.lookup("connection");
     cout << "connection: " << c << endl;
+
+    int seed = cfg.lookup("srand");
+    srand(seed);
+    cout << "random seed: " << seed << endl;
   } catch (const SettingNotFoundException& nfex) {
     cerr << "No 'name' setting in configuration file." << endl;
   }
@@ -26,6 +31,7 @@ TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr){
 
   try {
     const Setting& loggerPeer = root["logger"]["topology"];
+
     if (loggerPeer.lookupValue("stdout", stdout) && stdout) {
       this->logger = stdLogger;
     } else if (loggerPeer.lookupValue("filename", filename)) {
@@ -36,17 +42,15 @@ TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr){
   } catch (const SettingNotFoundException& nfex) {
     cout << "topology setting not found" << endl;
   }
-
   for (int i = 0; i < n; i++) {
     Peer_Type *peerObj = new Peer_Type();
     this->peers.push_back(peerObj);
     int peerUID = peerObj->getUID();
     try {
-      //cout << "logger.p" + to_string(peerUID) << endl;
+      // cout << "logger.p" + to_string(peerUID) << endl;
       const Setting& loggerPeer = root["logger"]["p" + to_string(peerUID)];
 
       //  if (cfg.lookup("logger.p" + to_string(peerUID))) {
-
 
 
       if (loggerPeer.lookupValue("stdout", stdout) && stdout) {
@@ -62,7 +66,7 @@ TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr){
         }
       }
     } catch (const SettingNotFoundException& nfex) {
-    //  cerr << "Setting not found" << endl;
+      //  cerr << "Setting not found" << endl;
     }
   }
 
@@ -88,15 +92,23 @@ void TopologyGen<Peer_Type>::forEach(function<void(Peer&)>f) {
 template<class Peer_Type>
 void TopologyGen<Peer_Type>::forEach(unsigned             milliseconds,
                                      function<void(Peer&)>f) {
+  int msgStep = 0;
+
   for (int i = 0; i < this->peers.size(); i++) {
     f(*this->peers[i]);
+    msgStep += this->peers[i].getMsgNumber();
     usleep(milliseconds * 1000);
   }
+  counterMsg += msgStep;
+
+  if (this->logger) this->logger->printLog(
+      "number of message this step: " + to_string(msgStep) +" total: "+to_string(counterMsg));
 }
 
 template<class Peer_Type>
 void TopologyGen<Peer_Type>::print() {
   ostringstream str;
+
   for (int i = 0; i < this->peers.size(); i++) {
     str << this->peers[i]->getUID() << " -> ";
 
@@ -105,7 +117,8 @@ void TopologyGen<Peer_Type>::print() {
     }
     str << endl;
   }
-  if(this->logger) this->logger->printLog(str.str());
+
+  if (this->logger) this->logger->printLog(str.str());
 }
 
 template<class Peer_Type>

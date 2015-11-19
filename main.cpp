@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 
   shared_ptr<Logger> logger(new Logger());
 
-  Peer_p p1, p2(logger), p3, p4(logger);
+  Peer_pp p1, p2(logger), p3, p4;
   p1.addNeighbor(p2);
   p1.addNeighbor(p3);
   p2.addNeighbor(p4);
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 
   while (true) {
     for (auto& p : peerVector) {
-      (*p).work(1);
+      p->work(1);
       sleep(1);
     }
   }

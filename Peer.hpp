@@ -14,15 +14,34 @@
 
 using namespace std;
 
-enum class ErrorType { ALREADY_FORWARDED_PING, UNOKNOW_PONG, EXPIRED_MSG };
+enum class ErrorType { ALREADY_FORWARDED_PING, UNOKNOW_PONG, EXPIRED_MSG, MY_PING, MY_PONG };
 
+struct TimeStr {
+  time_t                now;
+  function<int()>       sec;
+  function<void(time_t)>fun;
+  TimeStr(time_t                now,
+          function<int()>       sec,
+          function<void(time_t)>fun) : now(now), sec(sec), fun(fun) {}
+};
 
 class Peer {
+  int UID;
+  void checkTimers();
+
+  static int MASTER_ID;
+  std::queue<Message *> queue;
+
+  vector<TimeStr>    timers;
+  shared_ptr<Logger> logger;
+
+  unordered_map<int, int> pingTable;
+
 public:
 
   Peer(const Peer&)            = delete;
   Peer& operator=(const Peer&) = delete;
-  Peer(Peer&&)                 = delete;
+  Peer(Peer &&)                = delete;
 
   Peer();
   Peer(int uid,
@@ -78,24 +97,11 @@ protected:
                            int);
   virtual void onErrorMsg(Message &, ErrorType, int);
   virtual void onWork();
-  void         addTimer(time_t,
+  void         addTimer(function<int()>,
                         function<void(time_t)>);
 
   void log(string);
   void log(string, const Message &m);
   unordered_map<int, Peer *> neighbor;
-
-//private:
-
-  int UID;
-  void checkTimers();
-
-  static int MASTER_ID;
-  std::queue<Message *> queue;
-
-  unordered_map<time_t, function<void(time_t)> > timers;
-  shared_ptr<Logger> logger;
-
-  unordered_map<int, int> pingTable;
 };
 #endif // ifndef Peer_h_
