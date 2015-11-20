@@ -39,9 +39,8 @@ struct ListNode {
   string toString() {
     ostringstream stream;
 
-    stream << "time: " << this->tstamp-time(0) << " msg_id: " << original_sender <<
-    " neighbor_id: " <<
-    neighbor_id;
+    stream << "time: " << this->tstamp-time(0) << " original_sender: " << original_sender <<
+    " neighbor_id: " <<  neighbor_id;
     return stream.str();
   }
 };
@@ -64,6 +63,7 @@ public:
   Peer_pp(int uid,
           shared_ptr<Logger>);
   Peer_pp(shared_ptr<Logger>);
+  ~Peer_pp(){}
 
 protected:
 
@@ -73,9 +73,9 @@ protected:
   // void onValidPong(Message&,
   //                  int) override;
 
-  void addPongCache(int,
-                    const Message&) override;
+  bool addPongCache(int,
+                    unique_ptr<Message>) override;
   void sendChachedPong(int,
-                       const Message&) override;
+                       unique_ptr<Message>) override;
 };
 #endif // ifndef Peer_pp_h_

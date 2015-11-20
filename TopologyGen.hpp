@@ -16,15 +16,15 @@ using namespace libconfig;
 
 template<class Peer_Type>class TopologyGen {
   shared_ptr<Logger> logger;
-  vector<Peer *> peers;
-  int counterMsg;
+  vector<shared_ptr<Peer>> peers;
 public:
 
   TopologyGen(const TopologyGen&)            = delete;
   TopologyGen& operator=(const TopologyGen&) = delete;
   TopologyGen(TopologyGen &&)                = delete;
 
-  // TopologyGen(int, double);
+  TopologyGen(vector<shared_ptr<Peer>>);
+  TopologyGen(vector<shared_ptr<Peer>>, shared_ptr<Logger>);
   TopologyGen(Config&);
 
   void setLogger(int,

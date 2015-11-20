@@ -22,40 +22,34 @@ void Peer_p::initTimer() {
   });
 }
 
-void Peer_p::onValidPing(Message& msg, int sender) {
-  if (sender != getUID()) {
-    forwordOne(new Message(msg.id, MsgType::PONG, getUID()), sender);
-    sendChachedPong(sender, msg);
-  } else {
-    delete &msg;
-  }
+void Peer_p::onValidPing(unique_ptr<Message> msg, int sender) {
+    forwordOne(unique_ptr<Message>(new Message(msg->id, MsgType::PONG, getUID())), sender);
+    sendChachedPong(sender, move(msg));
 }
 
-void Peer_p::onValidPong(Message& msg, int sender) {
-  if (sender != getUID()) {
-    addPongCache(sender, msg);
-    forwordOne(&msg, sender);
-  } else {
-    delete &msg;
-  }
+void Peer_p::onValidPong(unique_ptr<Message> msg, int sender) {
+    addPongCache(sender, unique_ptr<Message>(new Message(*msg)));
+    forwordOne(move(msg), sender);
 }
 
-void Peer_p::addPongCache(int neighbor, const Message& m) {
+bool Peer_p::addPongCache(int neighbor, unique_ptr<Message> m) {
 
-  log("\tadd PONG to the cache", m);
+  log("\tadd PONG to the cache", *m);
   auto got = this->pongCache.find(neighbor);
   if (got != this->pongCache.end()) {
-    log("\tadd to existing list",  m);
-    got->second.emplace(m.originalSender,unique_ptr<Message>(new Message(m)));
+    log("\tadd to existing list",  *m);
+    auto ret = got->second.emplace(m->originalSender, unique_ptr<Message>(new Message(*m)));
+    return ret.second;
   } else {
-    log("\tcreate a new list",     m);
+    log("\tcreate a new list",     *m);
     unordered_map< int, unique_ptr<Message> > map;
-    map.emplace(m.originalSender,unique_ptr<Message>(new Message(m)));
+    map.emplace(m->originalSender,unique_ptr<Message>(new Message(*m)));
     this->pongCache.emplace(neighbor, move(map));
+    return true;
   }
 }
 
-void Peer_p::sendChachedPong(int to, const Message& m) {
+void Peer_p::sendChachedPong(int to,unique_ptr<Message> m) {
   for (auto& n : this->neighbor) {
     if (n.first != to) {
       auto got = this->pongCache.find(n.first);
@@ -63,13 +57,15 @@ void Peer_p::sendChachedPong(int to, const Message& m) {
       if (got != this->pongCache.end()) {
         for (auto& pong : got->second) {
           log("\treply with cached PONG!", *pong.second);
-          forwordOne(new Message(m.id, MsgType::PONG, pong.second->originalSender,
-                                 getUID()), to);
+          forwordOne(unique_ptr<Message>(new Message(m->id, MsgType::PONG, pong.second->originalSender,
+                                 getUID())), to);
         }
       } else {
-        log("\tforword PING!", m);
-        n.second->putMessage(new Message(m));
+        log("\tforword PING!", *m);
+        auto t = n.second.lock();
+        t->putMessage(unique_ptr<Message>(new Message(*m)));
       }
     }
   }
+  m.reset();
 }
