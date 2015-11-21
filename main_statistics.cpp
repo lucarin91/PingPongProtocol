@@ -58,8 +58,9 @@ int main(int argc, char *argv[]) {
   T.print();
   // T.startPing(1);
   unsigned long nMsg = 0;
-  time_t end = time(0)+60*5;
-  while(time(0)<end) {
+  //time_t end = time(0)+60*5;
+  //while(time(0)<end) {
+  for (int i=0;i<step;i++){
     unsigned long stepMsg = 0;
     T.forEach([&](Peer & p)->void {
                 p.work(work);
