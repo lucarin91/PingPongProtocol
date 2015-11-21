@@ -14,7 +14,7 @@ using namespace std;
 using namespace libconfig;
 
 unsigned sleepTime = 0;
-unsigned work      = 2;
+unsigned work      = 1;
 
 
 int main(int argc, char *argv[]) {
