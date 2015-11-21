@@ -21,10 +21,11 @@ int main(int argc, char *argv[]) {
   std::cout << "Ping <--> Pong" << std::endl;
 
   Config cfg;
-  shared_ptr<Logger> logger(new Logger());
-  char* cfgName = ArgsParser::getArgument(argc, argv, "-c");
 
-  if (cfgName){
+  shared_ptr<Logger> logger(new Logger());
+  char *cfgName = ArgsParser::getArgument(argc, argv, "-c");
+
+  if (cfgName) {
     try {
       cfg.readFile(cfgName);
     } catch (const FileIOException& fioex) {
@@ -35,52 +36,51 @@ int main(int argc, char *argv[]) {
                 << " - " << pex.getError() << std::endl;
       return 0;
     }
-
-  // }else{
-  //   Peer p1, p2(logger), p3, p4;
-  //   p1.addNeighbor(shared_ptr<Peer>(&p2));
-  //   p1.addNeighbor(shared_ptr<Peer>(&p3));
-  //   p2.addNeighbor(shared_ptr<Peer>(&p4));
-  //   p2.addNeighbor(shared_ptr<Peer>(&p3));
-  //   //p2.sendPing();
-  //
-  //   std::vector<shared_ptr<Peer> > peerVector;
-  //   peerVector.push_back(shared_ptr<Peer>(&p2));
-  //   peerVector.push_back(shared_ptr<Peer>(&p1));
-  //   peerVector.push_back(shared_ptr<Peer>(&p4));
-  //   peerVector.push_back(shared_ptr<Peer>(&p3));
-  //
-  //   TopologyGen<Peer_pp> T (move(peerVector),logger));
-  // }
+    // }else{
+    //   Peer p1, p2(logger), p3, p4;
+    //   p1.addNeighbor(shared_ptr<Peer>(&p2));
+    //   p1.addNeighbor(shared_ptr<Peer>(&p3));
+    //   p2.addNeighbor(shared_ptr<Peer>(&p4));
+    //   p2.addNeighbor(shared_ptr<Peer>(&p3));
+    //   //p2.sendPing();
+    //
+    //   std::vector<shared_ptr<Peer> > peerVector;
+    //   peerVector.push_back(shared_ptr<Peer>(&p2));
+    //   peerVector.push_back(shared_ptr<Peer>(&p1));
+    //   peerVector.push_back(shared_ptr<Peer>(&p4));
+    //   peerVector.push_back(shared_ptr<Peer>(&p3));
+    //
+    //   TopologyGen<Peer_pp> T (move(peerVector),logger));
+    // }
   #if V1
-  TopologyGen<Peer> T(cfg) ;
-  #endif
+    TopologyGen<Peer> T(cfg);
+  #endif // if V1
   #if V2
-  TopologyGen<Peer_p> T(cfg) ;
-  #endif
+    TopologyGen<Peer_p> T(cfg);
+  #endif // if V2
   #if V3
-  TopologyGen<Peer_pp> T(cfg) ;
-  #endif
+    TopologyGen<Peer_pp> T(cfg);
+  #endif // if V3
 
-  T.print();
-  // T.startPing(1);
-  int nMsg = 0;
+    T.print();
 
-  for (int i = 0; i < 100000; i++) {
-    int stepMsg = 0;
-    T.forEach(sleepTime, [&](Peer & p)->void {
-                p.work(work);
-                stepMsg += p.getLastStatistics();
-              });
+    // T.startPing(1);
+    int nMsg = 0;
 
-    if (stepMsg != 0) {
-      nMsg += stepMsg;
-      logger->printLog(">>>>>>>>>>>>>> STEP_MSG: " + to_string(
-                         stepMsg) + " - TOT_MSG: " + to_string(
-                         nMsg) + " <<<<<<<<<<<<<<<<<\n\n");
+    for (int i = 0; i < 100000; i++) {
+      int stepMsg = 0;
+      T.simulate(sleepTime, work, [&](Peer& p) -> void {
+        stepMsg += p.getLastStatistics();
+      });
+
+      if (stepMsg != 0) {
+        nMsg += stepMsg;
+        logger->printLog(">>>>>>>>>>>>>> STEP_MSG: " + to_string(
+                           stepMsg) + " - TOT_MSG: " + to_string(
+                           nMsg) + " <<<<<<<<<<<<<<<<<\n\n");
+      }
     }
   }
-}
 
 
   //

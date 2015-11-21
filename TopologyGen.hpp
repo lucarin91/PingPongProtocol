@@ -16,26 +16,36 @@ using namespace libconfig;
 
 template<class Peer_Type>class TopologyGen {
   shared_ptr<Logger> logger;
-  vector<shared_ptr<Peer>> peers;
+  vector<shared_ptr<Peer> > peers;
   void generateLink(double);
+
 public:
 
   TopologyGen(const TopologyGen&)            = delete;
   TopologyGen& operator=(const TopologyGen&) = delete;
-  TopologyGen(TopologyGen &&)                = delete;
+  TopologyGen(TopologyGen&&)                 = delete;
 
-  TopologyGen(vector<shared_ptr<Peer>>);
-  TopologyGen(vector<shared_ptr<Peer>>, shared_ptr<Logger>);
+  TopologyGen(vector<shared_ptr<Peer> >);
+  TopologyGen(vector<shared_ptr<Peer> >,
+              shared_ptr<Logger>);
   TopologyGen(Config&);
-  TopologyGen(int,double,long);
-  TopologyGen(int,double,long,shared_ptr<Logger>);
+  TopologyGen(int,
+              double,
+              long);
+  TopologyGen(int,
+              double,
+              long,
+              shared_ptr<Logger>);
 
   void setLogger(int,
                  shared_ptr<Logger>);
   void startPing(int p);
-  void forEach(function<void(Peer&)>);
-  void forEach(unsigned,
-               function<void(Peer&)>);
+  void simulate(function<void(Peer&)>);
+  void simulate(unsigned int,
+                function<void(Peer&)>);
+  void simulate(unsigned int,
+                unsigned int,
+                function<void(Peer&)>);
   void print();
 };
 #endif // ifndef TopologyGen_h_

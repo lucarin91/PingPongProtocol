@@ -5,19 +5,26 @@ using namespace libconfig;
 
 template<class Peer_Type>
 TopologyGen<Peer_Type>::TopologyGen(vector<shared_ptr<Peer> >v) : logger(nullptr),
-                                                                  peers(v) {}
+  peers(v) {}
 
 template<class Peer_Type>
 TopologyGen<Peer_Type>::TopologyGen(vector<shared_ptr<Peer> >v,
                                     shared_ptr<Logger>       l) : logger(l),
-                                                                  peers(v) {}
+  peers(v) {}
 
 template<class Peer_Type>
-TopologyGen<Peer_Type>::TopologyGen(int N, double c, long seed) : TopologyGen<Peer_Type>(N,c,seed,nullptr) {}
+TopologyGen<Peer_Type>::TopologyGen(int N, double c,
+                                    long seed) : TopologyGen<Peer_Type>(N,
+                                                                        c,
+                                                                        seed,
+                                                                        nullptr) {}
 
 template<class Peer_Type>
-TopologyGen<Peer_Type>::TopologyGen(int N, double c, long seed, shared_ptr<Logger> l) : logger(l) {
-  for (int i =0; i<N; ++i){
+TopologyGen<Peer_Type>::TopologyGen(int               N,
+                                    double            c,
+                                    long              seed,
+                                    shared_ptr<Logger>l) : logger(l) {
+  for (int i = 0; i < N; ++i) {
     this->peers.push_back(shared_ptr<Peer_Type>(new Peer_Type()));
   }
   srand(seed);
@@ -62,6 +69,7 @@ TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr) {
   } catch (const SettingNotFoundException& nfex) {
     cerr << "topology setting not found" << endl;
   }
+
   for (int i = 0; i < n; i++) {
     auto peerObj = shared_ptr<Peer_Type>(new Peer_Type());
     this->peers.push_back(peerObj);
@@ -91,18 +99,17 @@ TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr) {
   }
 
   generateLink(c);
-
 }
 
 template<class Peer_Type>
-void TopologyGen<Peer_Type>::generateLink(double c){
-    for (int i = 0; i < this->peers.size(); i++) {
-      for (int j = 0; j < this->peers.size(); j++) {
-        double r = ((double)rand() / (RAND_MAX));
+void TopologyGen<Peer_Type>::generateLink(double c) {
+  for (int i = 0; i < this->peers.size(); i++) {
+    for (int j = 0; j < this->peers.size(); j++) {
+      double r = ((double)rand() / (RAND_MAX));
 
-        if (r <= c) this->peers[i]->addNeighbor(this->peers[j]);
-      }
+      if (r <= c) this->peers[i]->addNeighbor(this->peers[j]);
     }
+  }
 }
 
 template<class Peer_Type>
@@ -111,16 +118,25 @@ void TopologyGen<Peer_Type>::setLogger(int p, shared_ptr<Logger>l) {
 }
 
 template<class Peer_Type>
-void TopologyGen<Peer_Type>::forEach(function<void(Peer&)>f) {
-  forEach(0, f);
+void TopologyGen<Peer_Type>::simulate(function<void(Peer&)>cb) {
+  simulate(0, 1, cb);
 }
 
 template<class Peer_Type>
-void TopologyGen<Peer_Type>::forEach(unsigned             milliseconds,
-                                     function<void(Peer&)>f) {
+void TopologyGen<Peer_Type>::simulate(unsigned int         quanto,
+                                      function<void(Peer&)>cb) {
+  simulate(0, quanto, cb);
+}
+
+template<class Peer_Type>
+void TopologyGen<Peer_Type>::simulate(unsigned int         milliseconds,
+                                      unsigned int         quanto,
+                                      function<void(Peer&)>cb) {
   for (int i = 0; i < this->peers.size(); i++) {
-    f(*this->peers[i]);
-    usleep(milliseconds * 1000);
+    this->peers[i]->work(quanto);
+    cb(*this->peers[i]);
+
+    if (milliseconds != 0) usleep(milliseconds * 1000);
   }
 }
 

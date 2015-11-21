@@ -1,14 +1,14 @@
 #include "Message.hpp"
 
-int Message::MASTER_ID = 0;
+unsigned long Message::MASTER_ID = 0;
 
 Message::Message(MsgType type, int originalSender) :
   Message(++MASTER_ID, type, originalSender) {}
 
-Message::Message(int id, MsgType type, int originalSender) :
+Message::Message(unsigned long id, MsgType type, int originalSender) :
   Message(id, type, originalSender, originalSender) {}
 
-Message::Message(int id, MsgType type, int originalSender, int lastSender) :
+Message::Message(unsigned long id, MsgType type, int originalSender, int lastSender) :
   id(id),
   type(type),
   TTL(DEFAULT_TTL),
