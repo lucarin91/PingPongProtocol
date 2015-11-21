@@ -51,7 +51,10 @@ void Peer::checkTimers() {
 void Peer::addTimer(function<int()>sec, function<void(time_t)>f) {
   int secCont = sec();
 
-      log("add timer " + to_string(secCont));
+  log("add timer " + to_string(secCont));
+  time_t t = time(0) + secCont;
+  //cout << "TIMER "<< ctime(&t) << endl;
+
   this->timers.push_back(TimeStr(time(0) + secCont, sec, f));
 }
 

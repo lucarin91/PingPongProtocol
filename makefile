@@ -1,26 +1,34 @@
-build: tmp main.cpp tmp/TopologyGen.o tmp/Peer.o tmp/Peer_p.o tmp/Peer_pp.o tmp/Message.o tmp/Logger.o
-	g++ -g -std=c++11 main.cpp tmp/TopologyGen.o tmp/Peer.o tmp/Peer_p.o tmp/Peer_pp.o tmp/Message.o tmp/Logger.o -lconfig++ -o main.out
+CXX = g++
+CXXFLAGS = -g -std=c++11 -O3
+LCONF = -lconfig++
 
-tmp/TopologyGen.o: TopologyGen.cpp TopologyGen.hpp
-	g++ -g -c -std=c++11 TopologyGen.cpp -o tmp/TopologyGen.o
+.PHONY: all_build build clean
 
-tmp/Peer_pp.o: Peer_pp.cpp Peer_pp.hpp
-	g++ -g -c Peer_pp.cpp -std=c++11 -o tmp/Peer_pp.o
+all_build: build main_v1.out main_v2.out main_v3.out main_statistics_v1.out main_statistics_v2.out main_statistics_v3.out
 
-tmp/Peer_p.o: Peer_p.cpp Peer_p.hpp
-	g++ -g -c -std=c++11 Peer_p.cpp -o tmp/Peer_p.o
+main_v1.out: main.cpp build/TopologyGen.o build/Peer.o build/Peer_p.o build/Peer_pp.o build/Message.o build/Logger.o build/ArgsParser.o
+	$(CXX) $^ $(CXXFLAGS) $(LCONF) -DV1 -o $@
 
-tmp/Peer.o: Peer.cpp Peer.hpp
-	g++ -g -c -std=c++11 Peer.cpp -o tmp/Peer.o
+main_v2.out: main.cpp build/TopologyGen.o build/Peer.o build/Peer_p.o build/Peer_pp.o build/Message.o build/Logger.o build/ArgsParser.o
+	$(CXX) $^ $(CXXFLAGS) $(LCONF) -DV2 -o $@
 
-tmp/Message.o: Message.cpp Message.hpp
-	g++ -g -c -std=c++11 Message.cpp -o tmp/Message.o
+main_v3.out: main.cpp build/TopologyGen.o build/Peer.o build/Peer_p.o build/Peer_pp.o build/Message.o build/Logger.o build/ArgsParser.o
+	$(CXX) $^ $(CXXFLAGS) $(LCONF) -DV3 -o $@
 
-tmp/Logger.o: Logger.cpp Logger.hpp
-	g++ -g -c -std=c++11 Logger.cpp -o tmp/Logger.o
+main_statistics_v1.out: main_statistics.cpp build/TopologyGen.o build/Peer.o build/Peer_p.o build/Peer_pp.o build/Message.o build/Logger.o build/ArgsParser.o
+	$(CXX) $^ $(CXXFLAGS) $(LCONF) -DV1 -o $@
 
-tmp:
-	mkdir -p tmp
+main_statistics_v2.out: main_statistics.cpp build/TopologyGen.o build/Peer.o build/Peer_p.o build/Peer_pp.o build/Message.o build/Logger.o build/ArgsParser.o
+	$(CXX) $^ $(CXXFLAGS) $(LCONF) -DV2 -o $@
+
+main_statistics_v3.out: main_statistics.cpp build/TopologyGen.o build/Peer.o build/Peer_p.o build/Peer_pp.o build/Message.o build/Logger.o build/ArgsParser.o
+	$(CXX) $^ $(CXXFLAGS) $(LCONF) -DV3 -o $@
+
+build/%.o: %.cpp %.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+build:
+	mkdir -p build
 
 clean:
-	rm -Rfv tmp *.gch main.out
+	rm -Rvf build main.out

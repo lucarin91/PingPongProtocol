@@ -21,12 +21,15 @@ struct ListNode {
   time_t tstamp;
   int    original_sender;
   int    neighbor_id;
+  int    msg_id;
   ListNode(time_t tstamp,
            int    original_sender,
-           int    neighbor_id) :
+           int    neighbor_id,
+           int    msg_id) :
     tstamp(tstamp),
     original_sender(original_sender),
-    neighbor_id(neighbor_id) {}
+    neighbor_id(neighbor_id),
+    msg_id(msg_id) {}
 
   bool operator<(const ListNode& b) {
     return this->tstamp < b.tstamp;
@@ -39,19 +42,21 @@ struct ListNode {
   string toString() {
     ostringstream stream;
 
-    stream << "time: " << this->tstamp-time(0) << " original_sender: " << original_sender <<
+    stream << "time: " << this->tstamp - time(0) << " msg_id: " << msg_id <<" original_sender: " <<
+    original_sender <<
     " neighbor_id: " <<  neighbor_id;
     return stream.str();
   }
 };
 
 class Peer_pp : public Peer_p {
-  static const int K = 3;
-  static const int CACHE_TIME = 30;
-  //unordered_map<int, unordered_map<int, unique_ptr<Message> > > pongCache;
+  static const int K          = 3;
+  static const int CACHE_TIME = 60;
+
+  // unordered_map<int, unordered_map<int, unique_ptr<Message> > > pongCache;
   list<ListNode> timeList;
 
-  void initTimer();
+  void initTimerTEST();
 
 public:
 
@@ -63,7 +68,7 @@ public:
   Peer_pp(int uid,
           shared_ptr<Logger>);
   Peer_pp(shared_ptr<Logger>);
-  ~Peer_pp(){}
+  ~Peer_pp() {}
 
 protected:
 

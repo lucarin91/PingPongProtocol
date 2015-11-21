@@ -17,6 +17,7 @@ using namespace libconfig;
 template<class Peer_Type>class TopologyGen {
   shared_ptr<Logger> logger;
   vector<shared_ptr<Peer>> peers;
+  void generateLink(double);
 public:
 
   TopologyGen(const TopologyGen&)            = delete;
@@ -26,6 +27,8 @@ public:
   TopologyGen(vector<shared_ptr<Peer>>);
   TopologyGen(vector<shared_ptr<Peer>>, shared_ptr<Logger>);
   TopologyGen(Config&);
+  TopologyGen(int,double,long);
+  TopologyGen(int,double,long,shared_ptr<Logger>);
 
   void setLogger(int,
                  shared_ptr<Logger>);

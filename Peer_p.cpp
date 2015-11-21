@@ -16,7 +16,7 @@ Peer_p::Peer_p() : Peer(nullptr) {
 }
 
 void Peer_p::initTimer() {
-  addTimer([]()->int{return rand()%10+2;}, [&](time_t)->void {
+  addTimer([]()->int{return rand()%30+5;}, [&](time_t)->void {
     log("send Pings...");
     sendPing();
   });
@@ -38,8 +38,12 @@ bool Peer_p::addPongCache(int neighbor, unique_ptr<Message> m) {
   auto got = this->pongCache.find(neighbor);
   if (got != this->pongCache.end()) {
     log("\tadd to existing list",  *m);
-    auto ret = got->second.emplace(m->originalSender, unique_ptr<Message>(new Message(*m)));
-    return ret.second;
+    unique_ptr<Message> msgPtr (new Message(*m));
+    // auto ret = got->second.emplace(m->originalSender, move(msgPtr));
+    // log("\tinsertion: "+ to_string(ret.second));
+    // if (ret.second)
+    got->second[m->originalSender] = move(msgPtr);
+    return true;
   } else {
     log("\tcreate a new list",     *m);
     unordered_map< int, unique_ptr<Message> > map;

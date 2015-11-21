@@ -4,13 +4,25 @@ using namespace std;
 using namespace libconfig;
 
 template<class Peer_Type>
-TopologyGen<Peer_Type>::TopologyGen(vector<shared_ptr<Peer>> v) : logger(nullptr),
-                                                       peers(v) {}
+TopologyGen<Peer_Type>::TopologyGen(vector<shared_ptr<Peer> >v) : logger(nullptr),
+                                                                  peers(v) {}
 
 template<class Peer_Type>
-TopologyGen<Peer_Type>::TopologyGen(vector<shared_ptr<Peer>> v,
-                                    shared_ptr<Logger>        l) : logger(l),
-                                                       peers(v) {}
+TopologyGen<Peer_Type>::TopologyGen(vector<shared_ptr<Peer> >v,
+                                    shared_ptr<Logger>       l) : logger(l),
+                                                                  peers(v) {}
+
+template<class Peer_Type>
+TopologyGen<Peer_Type>::TopologyGen(int N, double c, long seed) : TopologyGen<Peer_Type>(N,c,seed,nullptr) {}
+
+template<class Peer_Type>
+TopologyGen<Peer_Type>::TopologyGen(int N, double c, long seed, shared_ptr<Logger> l) : logger(l) {
+  for (int i =0; i<N; ++i){
+    this->peers.push_back(shared_ptr<Peer_Type>(new Peer_Type()));
+  }
+  srand(seed);
+  generateLink(c);
+}
 
 template<class Peer_Type>
 TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr) {
@@ -78,13 +90,19 @@ TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr) {
     }
   }
 
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < n; j++) {
-      double r = ((double)rand() / (RAND_MAX));
+  generateLink(c);
 
-      if (r <= c) this->peers[i]->addNeighbor(this->peers[j]);
+}
+
+template<class Peer_Type>
+void TopologyGen<Peer_Type>::generateLink(double c){
+    for (int i = 0; i < this->peers.size(); i++) {
+      for (int j = 0; j < this->peers.size(); j++) {
+        double r = ((double)rand() / (RAND_MAX));
+
+        if (r <= c) this->peers[i]->addNeighbor(this->peers[j]);
+      }
     }
-  }
 }
 
 template<class Peer_Type>
