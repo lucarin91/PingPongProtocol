@@ -4,13 +4,15 @@ using namespace std;
 int Peer::MASTER_ID = 0;
 
 Peer::Peer(int               uid,
-           shared_ptr<Logger>logger) : UID(uid), logger(logger), lastMsg(0),allMsg(0) {}
+           shared_ptr<Logger>logger) :
+  UID(uid), logger(logger), lastMsg(0), allMsg(0) {}
 
-Peer::Peer(shared_ptr<Logger>logger) : Peer(++Peer::MASTER_ID, logger) {}
+Peer::Peer(shared_ptr<Logger>logger) :
+  Peer(++Peer::MASTER_ID, logger) {}
 
 Peer::Peer() : Peer(nullptr) {}
 
-bool Peer::addNeighbor(shared_ptr<Peer> p) {
+bool Peer::addNeighbor(shared_ptr<Peer>p) {
   auto got = this->neighbor.find(p->getUID());
 
   if ((this->UID != p->getUID()) && (got == this->neighbor.end())) {
@@ -20,11 +22,11 @@ bool Peer::addNeighbor(shared_ptr<Peer> p) {
   } else return false;
 }
 
-void Peer::setLogger(shared_ptr<Logger> l) {
+void Peer::setLogger(shared_ptr<Logger>l) {
   this->logger = l;
 }
 
-void Peer::putMessage(unique_ptr<Message> m) {
+void Peer::putMessage(unique_ptr<Message>m) {
   this->queue.push(move(m));
 
   // cout << "peer " << this->UID <<" :: "<< "add to queue" <<
@@ -53,22 +55,25 @@ void Peer::addTimer(function<int()>sec, function<void(time_t)>f) {
 
   log("add timer " + to_string(secCont));
   time_t t = time(0) + secCont;
-  //cout << "TIMER "<< ctime(&t) << endl;
+
+  // cout << "TIMER "<< ctime(&t) << endl;
 
   this->timers.push_back(TimeStr(time(0) + secCont, sec, f));
 }
 
-void Peer::onValidPing(unique_ptr<Message> msg, int sender) {
+void Peer::onValidPing(unique_ptr<Message>msg, int sender) {
   int id = msg->id;
+
   forwordAll(move(msg), sender);
-  forwordOne(unique_ptr<Message>(new Message(id, MsgType::PONG, getUID())), sender);
+  forwordOne(unique_ptr<Message>(new Message(id, MsgType::PONG, getUID())),
+             sender);
 }
 
-void Peer::onValidPong(unique_ptr<Message> msg, int sender) {
+void Peer::onValidPong(unique_ptr<Message>msg, int sender) {
   forwordOne(move(msg), sender);
 }
 
-void Peer::onErrorMsg(unique_ptr<Message> msg, ErrorType error, int) {
+void Peer::onErrorMsg(unique_ptr<Message>msg, ErrorType error, int) {
   switch (error) {
   case ErrorType::MY_PING:
     break;
@@ -153,9 +158,9 @@ void Peer::work(int quanto) {
   }
 }
 
-void Peer::forwordAll(unique_ptr<Message> m, int notSendId) {
+void Peer::forwordAll(unique_ptr<Message>m, int notSendId) {
   for (auto& p : this->neighbor) {
-    if (p.first != notSendId){
+    if (p.first != notSendId) {
       auto t = p.second.lock();
       t->putMessage(unique_ptr<Message>(new Message(*m)));
       incrementNumberMsg();
@@ -163,7 +168,7 @@ void Peer::forwordAll(unique_ptr<Message> m, int notSendId) {
   }
 }
 
-void Peer::forwordOne(unique_ptr<Message> m, int to) {
+void Peer::forwordOne(unique_ptr<Message>m, int to) {
   try {
     auto p = this->neighbor.at(to).lock();
     p->putMessage(move(m));

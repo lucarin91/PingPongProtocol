@@ -42,9 +42,10 @@ struct ListNode {
   string toString() {
     ostringstream stream;
 
-    stream << "time: " << this->tstamp - time(0) << " msg_id: " << msg_id <<" original_sender: " <<
-    original_sender <<
-    " neighbor_id: " <<  neighbor_id;
+    stream << "time: " << this->tstamp - time(0) << " msg_id: " << msg_id <<
+    " original_sender: " <<
+      original_sender <<
+      " neighbor_id: " <<  neighbor_id;
     return stream.str();
   }
 };
@@ -62,7 +63,7 @@ public:
 
   Peer_pp(const Peer_pp&)            = delete;
   Peer_pp& operator=(const Peer_pp&) = delete;
-  Peer_pp(Peer_pp &&)                = delete;
+  Peer_pp(Peer_pp&&)                 = delete;
 
   Peer_pp();
   Peer_pp(int uid,

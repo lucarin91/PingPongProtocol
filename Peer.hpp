@@ -28,23 +28,20 @@ struct TimeStr {
 
 class Peer : public std::enable_shared_from_this<Peer>{
   int UID;
+  shared_ptr<Logger> logger;
   int lastMsg;
   int allMsg;
   void checkTimers();
-
   static int MASTER_ID;
-  std::queue<unique_ptr<Message>> queue;
-
+  std::queue<unique_ptr<Message> > queue;
   vector<TimeStr> timers;
-  shared_ptr<Logger> logger;
-
   unordered_map<int, int> pingTable;
 
 public:
 
   Peer(const Peer&)            = delete;
   Peer& operator=(const Peer&) = delete;
-  Peer(Peer &&)                = delete;
+  Peer(Peer&&)                 = delete;
 
   Peer();
   Peer(int uid,
@@ -57,20 +54,26 @@ public:
     return this->UID;
   }
 
-  int  getLastStatistics(){
+  int getLastStatistics() {
     int tmp = lastMsg;
-    lastMsg=0;
+
+    lastMsg = 0;
     return tmp;
   }
-  int  getAllStatistics(){
+
+  int getAllStatistics() {
     return allMsg;
   }
+
   void sendPing();
   bool addNeighbor(shared_ptr<Peer>);
   void setLogger(shared_ptr<Logger>);
 
-  typedef typename std::unordered_map<int, weak_ptr<Peer> >::iterator       iterator;
-  typedef typename std::unordered_map<int, weak_ptr<Peer> >::const_iterator const_iterator;
+  typedef typename std::unordered_map<int,
+                                      weak_ptr<Peer> >::iterator iterator;
+  typedef typename std::unordered_map<int,
+                                      weak_ptr<Peer> >::const_iterator
+    const_iterator;
 
   iterator begin() {
     return neighbor.begin();
@@ -98,17 +101,21 @@ public:
 
 protected:
 
-  void         forwordAll(unique_ptr<Message>, int);
-  void         forwordOne(unique_ptr<Message>, int);
+  void         forwordAll(unique_ptr<Message>,
+                          int);
+  void         forwordOne(unique_ptr<Message>,
+                          int);
 
-  virtual void onValidPing(unique_ptr<Message>, int);
-  virtual void onValidPong(unique_ptr<Message>, int);
+  virtual void onValidPing(unique_ptr<Message>,
+                           int);
+  virtual void onValidPong(unique_ptr<Message>,
+                           int);
   virtual void onErrorMsg(unique_ptr<Message>, ErrorType, int);
   virtual void onWork();
   void         addTimer(function<int()>,
                         function<void(time_t)>);
 
-  unordered_map<int, weak_ptr<Peer>> neighbor;
+  unordered_map<int, weak_ptr<Peer> > neighbor;
 
 
   void log(string s) {
@@ -118,8 +125,10 @@ protected:
   void log(string s, const Message& m) {
     if (this->logger != nullptr) this->logger->printLog(this->UID, s, m);
   }
-  private:
-  void incrementNumberMsg(){
+
+private:
+
+  void incrementNumberMsg() {
     ++allMsg;
     ++lastMsg;
   }

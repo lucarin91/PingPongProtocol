@@ -9,12 +9,12 @@ using namespace std;
 enum class MsgType { PING, PONG };
 
 class Message {
-  static int MASTER_ID;
+  static unsigned long MASTER_ID;
   static const int DEFAULT_TTL = 4;
 
 public:
 
-  int id;
+  unsigned long id;
   MsgType type;
   int     TTL;
   int     HOPS;
@@ -25,11 +25,11 @@ public:
   Message(MsgType type,
           int     originalSender);
 
-  Message(int     id,
+  Message(unsigned long id,
           MsgType type,
           int     originalSender);
 
-  Message(int     id,
+  Message(unsigned long     id,
           MsgType type,
           int     originalSender,
           int     lastSender);
