@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
   srand(time(0));
   //td::cout << "Ping <--> Pong" << std::endl;
 
-  shared_ptr<Logger> logger(new Logger("topology_test"));
+  shared_ptr<Logger> logger(new Logger("topology_test.log"));
   int N = atoi(ArgsParser::getArgument(argc, argv, "-n"));
   double connection = stod(ArgsParser::getArgument(argc, argv, "-c"));
   long seed = stol(ArgsParser::getArgument(argc, argv, "-r"));
