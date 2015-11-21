@@ -13,28 +13,30 @@
 using namespace std;
 using namespace libconfig;
 
-unsigned sleepTime = 1000;
+unsigned sleepTime = 0;
 unsigned work      = 2;
 
 
 int main(int argc, char *argv[]) {
-  std::cout << "Ping <--> Pong" << std::endl;
+  srand(time(0));
+  //td::cout << "Ping <--> Pong" << std::endl;
 
-  Config cfg;
-  shared_ptr<Logger> logger(new Logger());
-  char* cfgName = ArgsParser::getArgument(argc, argv, "-c");
+  shared_ptr<Logger> logger(new Logger("topology_test"));
+  int N = atoi(ArgsParser::getArgument(argc, argv, "-n"));
+  double connection = stod(ArgsParser::getArgument(argc, argv, "-c"));
+  long seed = stol(ArgsParser::getArgument(argc, argv, "-r"));
+  int step = atoi(ArgsParser::getArgument(argc, argv, "-s"));
 
-  if (cfgName){
-    try {
-      cfg.readFile(cfgName);
-    } catch (const FileIOException& fioex) {
-      std::cerr << "I/O error while reading file." << std::endl;
-      return 0;
-    } catch (const ParseException& pex) {
-      std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine()
-                << " - " << pex.getError() << std::endl;
-      return 0;
-    }
+  if (N && step && connection && seed){
+    #if V1
+    TopologyGen<Peer> T (N,connection,seed,logger);
+    #endif
+    #if V2
+    TopologyGen<Peer_p> T (N,connection,seed,logger);
+    #endif
+    #if V3
+    TopologyGen<Peer_pp> T (N,connection,seed,logger);
+    #endif
 
   // }else{
   //   Peer p1, p2(logger), p3, p4;
@@ -50,38 +52,27 @@ int main(int argc, char *argv[]) {
   //   peerVector.push_back(shared_ptr<Peer>(&p4));
   //   peerVector.push_back(shared_ptr<Peer>(&p3));
   //
-  //   TopologyGen<Peer_pp> T (move(peerVector),logger));
+  //   T = move(new TopologyGen<Peer_pp>(move(peerVector),logger));
   // }
-  #if V1
-  TopologyGen<Peer> T(cfg) ;
-  #endif
-  #if V2
-  TopologyGen<Peer_p> T(cfg) ;
-  #endif
-  #if V3
-  TopologyGen<Peer_pp> T(cfg) ;
-  #endif
 
   T.print();
   // T.startPing(1);
-  int nMsg = 0;
-
-  for (int i = 0; i < 100000; i++) {
-    int stepMsg = 0;
-    T.forEach(sleepTime, [&](Peer & p)->void {
+  unsigned long nMsg = 0;
+  //time_t end = time(0)+60*5;
+  //while(time(0)<end) {
+  for (int i=0;i<step;i++){
+    unsigned long stepMsg = 0;
+    T.forEach([&](Peer & p)->void {
                 p.work(work);
                 stepMsg += p.getLastStatistics();
               });
 
     if (stepMsg != 0) {
       nMsg += stepMsg;
-      logger->printLog(">>>>>>>>>>>>>> STEP_MSG: " + to_string(
-                         stepMsg) + " - TOT_MSG: " + to_string(
-                         nMsg) + " <<<<<<<<<<<<<<<<<\n\n");
+      //cout << "\rTOT_MSG: " << nMsg;
     }
   }
-}
-
+  cout << nMsg << endl;
 
   //
   // for (int i =0;i<1000;i++) {
@@ -103,6 +94,6 @@ int main(int argc, char *argv[]) {
   //     sleep(1);
   //   }
   // }
-
+}
   return 0;
 }

@@ -14,25 +14,28 @@
 using namespace std;
 using namespace libconfig;
 
-template <class Peer_Type> class TopologyGen {
+template<class Peer_Type>class TopologyGen {
+  shared_ptr<Logger> logger;
+  vector<shared_ptr<Peer>> peers;
+  void generateLink(double);
 public:
 
   TopologyGen(const TopologyGen&)            = delete;
   TopologyGen& operator=(const TopologyGen&) = delete;
-  TopologyGen(TopologyGen&&)                 = delete;
+  TopologyGen(TopologyGen &&)                = delete;
 
-  //TopologyGen(int, double);
-  TopologyGen(Config& );
+  TopologyGen(vector<shared_ptr<Peer>>);
+  TopologyGen(vector<shared_ptr<Peer>>, shared_ptr<Logger>);
+  TopologyGen(Config&);
+  TopologyGen(int,double,long);
+  TopologyGen(int,double,long,shared_ptr<Logger>);
 
-  void setLogger(int, shared_ptr<Logger>);
+  void setLogger(int,
+                 shared_ptr<Logger>);
   void startPing(int p);
   void forEach(function<void(Peer&)>);
-  void forEach(unsigned,function<void(Peer&)>);
+  void forEach(unsigned,
+               function<void(Peer&)>);
   void print();
-
-private:
-  shared_ptr <Logger> logger;
-  vector<Peer*> peers;
-
 };
 #endif // ifndef TopologyGen_h_

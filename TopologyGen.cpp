@@ -4,7 +4,28 @@ using namespace std;
 using namespace libconfig;
 
 template<class Peer_Type>
-TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr){
+TopologyGen<Peer_Type>::TopologyGen(vector<shared_ptr<Peer> >v) : logger(nullptr),
+                                                                  peers(v) {}
+
+template<class Peer_Type>
+TopologyGen<Peer_Type>::TopologyGen(vector<shared_ptr<Peer> >v,
+                                    shared_ptr<Logger>       l) : logger(l),
+                                                                  peers(v) {}
+
+template<class Peer_Type>
+TopologyGen<Peer_Type>::TopologyGen(int N, double c, long seed) : TopologyGen<Peer_Type>(N,c,seed,nullptr) {}
+
+template<class Peer_Type>
+TopologyGen<Peer_Type>::TopologyGen(int N, double c, long seed, shared_ptr<Logger> l) : logger(l) {
+  for (int i =0; i<N; ++i){
+    this->peers.push_back(shared_ptr<Peer_Type>(new Peer_Type()));
+  }
+  srand(seed);
+  generateLink(c);
+}
+
+template<class Peer_Type>
+TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr) {
   srand(time(0));
   unsigned n;
   double   c;
@@ -14,6 +35,10 @@ TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr){
 
     c = cfg.lookup("connection");
     cout << "connection: " << c << endl;
+
+    int seed = cfg.lookup("srand");
+    srand(seed);
+    cout << "random seed: " << seed << endl;
   } catch (const SettingNotFoundException& nfex) {
     cerr << "No 'name' setting in configuration file." << endl;
   }
@@ -26,6 +51,7 @@ TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr){
 
   try {
     const Setting& loggerPeer = root["logger"]["topology"];
+
     if (loggerPeer.lookupValue("stdout", stdout) && stdout) {
       this->logger = stdLogger;
     } else if (loggerPeer.lookupValue("filename", filename)) {
@@ -34,19 +60,17 @@ TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr){
       this->logger = newLogger;
     }
   } catch (const SettingNotFoundException& nfex) {
-    cout << "topology setting not found" << endl;
+    cerr << "topology setting not found" << endl;
   }
-
   for (int i = 0; i < n; i++) {
-    Peer_Type *peerObj = new Peer_Type();
+    auto peerObj = shared_ptr<Peer_Type>(new Peer_Type());
     this->peers.push_back(peerObj);
     int peerUID = peerObj->getUID();
     try {
-      //cout << "logger.p" + to_string(peerUID) << endl;
+      // cout << "logger.p" + to_string(peerUID) << endl;
       const Setting& loggerPeer = root["logger"]["p" + to_string(peerUID)];
 
       //  if (cfg.lookup("logger.p" + to_string(peerUID))) {
-
 
 
       if (loggerPeer.lookupValue("stdout", stdout) && stdout) {
@@ -62,17 +86,23 @@ TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr){
         }
       }
     } catch (const SettingNotFoundException& nfex) {
-    //  cerr << "Setting not found" << endl;
+      //  cerr << "Setting not found" << endl;
     }
   }
 
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < n; j++) {
-      double r = ((double)rand() / (RAND_MAX));
+  generateLink(c);
 
-      if (r <= c) this->peers[i]->addNeighbor(*this->peers[j]);
+}
+
+template<class Peer_Type>
+void TopologyGen<Peer_Type>::generateLink(double c){
+    for (int i = 0; i < this->peers.size(); i++) {
+      for (int j = 0; j < this->peers.size(); j++) {
+        double r = ((double)rand() / (RAND_MAX));
+
+        if (r <= c) this->peers[i]->addNeighbor(this->peers[j]);
+      }
     }
-  }
 }
 
 template<class Peer_Type>
@@ -97,15 +127,18 @@ void TopologyGen<Peer_Type>::forEach(unsigned             milliseconds,
 template<class Peer_Type>
 void TopologyGen<Peer_Type>::print() {
   ostringstream str;
+
   for (int i = 0; i < this->peers.size(); i++) {
     str << this->peers[i]->getUID() << " -> ";
 
     for (const auto& p : *this->peers[i]) {
-      str << p.second->getUID() << " ";
+      auto t = p.second.lock();
+      str << t->getUID() << " ";
     }
     str << endl;
   }
-  if(this->logger) this->logger->printLog(str.str());
+
+  if (this->logger) this->logger->printLog(str.str());
 }
 
 template<class Peer_Type>

@@ -2,34 +2,52 @@
 
 using namespace std;
 
-void Peer_pp::initTimer(){
-  function<void(time_t)> f = [&](time_t now) -> void {
-    time_t elapse = 30;
-    log("FILTER PONG CACHE");
-    for (auto p = this->timeList.begin(); p != this->timeList.end();) {
-      this->pongCache[(*p).neighbor_id].erase((*p).msg_id);
+void Peer_pp::initTimerTEST() {
+  addTimer([] ()->int { return 30; }, [&](time_t now)->void {
+// time_t elapse = 30;
+                     log("FILTER PONG CACHE");
 
-      if ((*p).tstamp < now - elapse){
-        log("\tremoved"+(*p).toString());
-        p = this->timeList.erase(p);
-      }else{
-        log("\tmantened"+(*p).toString());
-        ++p;
-      }
-    }
-    addTimer(60,f);
-  };
-  addTimer(60,f);
+             for (auto p = this->timeList.begin(); p != this->timeList.end();) {
+               try {
+                 auto idlistMsg =
+                   this->pongCache[p->neighbor_id].at(p->original_sender)->id;
+
+                 if (p->tstamp <= now) {
+                   if (idlistMsg == p->msg_id) {
+                     log("\tremoved msg " + p->toString());
+                     this->pongCache[p->neighbor_id].erase(p->original_sender);
+                   }
+                   p = this->timeList.erase(p);
+                 } else {
+                     log("\tmantened " + p->toString());
+                   ++p;
+                 }
+               } catch (out_of_range e) {
+                     log("cache entry error");
+                 p = this->timeList.erase(p);
+               }
+             }
+
+             for (auto& n: this->pongCache) {
+               for (auto& p: n.second) log("CACHE: ", *p.second);
+             }
+           });
 }
 
-Peer_pp::Peer_pp(int uid, shared_ptr<Logger>logger) : Peer_p(uid, logger) {initTimer();}
+Peer_pp::Peer_pp(int               uid,
+                 shared_ptr<Logger>logger) : Peer_p(uid, logger) {
+  initTimerTEST();
+}
 
-Peer_pp::Peer_pp(shared_ptr<Logger>logger) : Peer_p(logger) {initTimer();}
+Peer_pp::Peer_pp(shared_ptr<Logger>logger) : Peer_p(logger) {
+  initTimerTEST();
+}
 
-Peer_pp::Peer_pp() : Peer_p() {initTimer();}
+Peer_pp::Peer_pp() : Peer_p() {
+  initTimerTEST();
+}
 
-
-void Peer_pp::sendChachedPong(int to, const Message& m) {
+void Peer_pp::sendChachedPong(int to, unique_ptr<Message>m) {
   for (auto& n : this->neighbor) {
     if (n.first != to) {
       auto got = this->pongCache.find(n.first);
@@ -37,33 +55,34 @@ void Peer_pp::sendChachedPong(int to, const Message& m) {
       if ((got != this->pongCache.end()) && (got->second.size() > Peer_pp::K)) {
         for (auto& tuple : got->second) {
           log("\treply with cached PONG!", *tuple.second);
-          forwordOne(new Message(m.id, MsgType::PONG,
-                                 tuple.second->originalSender,
-                                 getUID()), to);
+          forwordOne(unique_ptr<Message>(new Message(m->id, MsgType::PONG,
+                                                     tuple.second->originalSender,
+                                                     getUID())), to);
         }
-        delete &m;
       } else {
-        log("\tforword PING!", m);
-        n.second->putMessage(new Message(m));
+        log("\tforword PING!", *m);
+        auto t = n.second.lock();
+        t->putMessage(unique_ptr<Message>(new Message(*m)));
       }
     }
   }
+  m.reset();
 }
 
-void Peer_pp::addPongCache(int neighbor, const Message& m) {
-  auto got = this->pongCache.find(neighbor);
+bool Peer_pp::addPongCache(int neighbor, unique_ptr<Message>m) {
+  int sender = m->originalSender;
+  int id     = m->id;
 
-  log("\tadd PONG to the cache", m);
+  Peer_p::addPongCache(neighbor, move(m));
+        log("ADD TO CACHE!");
+  this->timeList.emplace(
+    this->timeList.end(),
+    time(0) + Peer_pp::CACHE_TIME,
+    sender,
+    neighbor,
+    id);
 
-  if (got != this->pongCache.end()) {
-    log("\tadd to existing map", m);
-    got->second.emplace(m.id, unique_ptr<Message>(new Message(m)));
-  } else {
-    log("\tcreate a new map", m);
-    unordered_map<int, unique_ptr<Message> > map;
-    map.emplace(m.id, unique_ptr<Message>(new Message(m)));
-    this->pongCache.emplace(neighbor, move(map));
-  }
-  log("\tadd to timeList");
-  this->timeList.emplace(this->timeList.end(),time(0), m.id, m.lastSender);
+  //     return true;
+  // }
+  return true;
 }

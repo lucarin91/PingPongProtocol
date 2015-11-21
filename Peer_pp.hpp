@@ -19,11 +19,17 @@ using namespace std;
 
 struct ListNode {
   time_t tstamp;
-  int    msg_id;
+  int    original_sender;
   int    neighbor_id;
-  ListNode(time_t tstamp, int msg_id, int neighbor_id) : tstamp(tstamp), msg_id(
-      msg_id),
-    neighbor_id(neighbor_id) {}
+  int    msg_id;
+  ListNode(time_t tstamp,
+           int    original_sender,
+           int    neighbor_id,
+           int    msg_id) :
+    tstamp(tstamp),
+    original_sender(original_sender),
+    neighbor_id(neighbor_id),
+    msg_id(msg_id) {}
 
   bool operator<(const ListNode& b) {
     return this->tstamp < b.tstamp;
@@ -36,24 +42,33 @@ struct ListNode {
   string toString() {
     ostringstream stream;
 
-    stream << "time: " << (time(0) - this->tstamp) << " msg_id: " << msg_id <<
-      " neighbor_id: " <<
-      neighbor_id;
+    stream << "time: " << this->tstamp - time(0) << " msg_id: " << msg_id <<" original_sender: " <<
+    original_sender <<
+    " neighbor_id: " <<  neighbor_id;
     return stream.str();
   }
 };
 
 class Peer_pp : public Peer_p {
+  static const int K          = 3;
+  static const int CACHE_TIME = 60;
+
+  // unordered_map<int, unordered_map<int, unique_ptr<Message> > > pongCache;
+  list<ListNode> timeList;
+
+  void initTimerTEST();
+
 public:
 
   Peer_pp(const Peer_pp&)            = delete;
   Peer_pp& operator=(const Peer_pp&) = delete;
-  Peer_pp(Peer_pp&&)                 = delete;
+  Peer_pp(Peer_pp &&)                = delete;
 
   Peer_pp();
   Peer_pp(int uid,
           shared_ptr<Logger>);
   Peer_pp(shared_ptr<Logger>);
+  ~Peer_pp() {}
 
 protected:
 
@@ -63,17 +78,9 @@ protected:
   // void onValidPong(Message&,
   //                  int) override;
 
-  void addPongCache(int,
-                    const Message&) override;
+  bool addPongCache(int,
+                    unique_ptr<Message>) override;
   void sendChachedPong(int,
-                       const Message&) override;
-
-private:
-
-  static const int K = 3;
-  unordered_map<int, unordered_map<int, unique_ptr<Message> > > pongCache;
-  list<ListNode> timeList;
-
-  void initTimer();
+                       unique_ptr<Message>) override;
 };
 #endif // ifndef Peer_pp_h_
