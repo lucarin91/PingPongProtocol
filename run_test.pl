@@ -20,5 +20,5 @@ for (my $i = 100; $i <= 1000; $i += 100) {
     print "$i\t$msg";
   }
   $tot = $tot/5;
-  print "media:\t$tot";
+  print "media:\t$tot\n";
 }
