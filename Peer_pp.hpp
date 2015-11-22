@@ -48,6 +48,10 @@ struct ListNode {
       " neighbor_id: " <<  neighbor_id;
     return stream.str();
   }
+
+  string getTime(){
+    return to_string(tstamp);
+  }
 };
 
 class Peer_pp : public Peer_p {

@@ -109,6 +109,7 @@ protected:
   virtual void onValidPing(unique_ptr<Message>,
                            int);
   virtual void onValidPong(unique_ptr<Message>,
+                           int,
                            int);
   virtual void onErrorMsg(unique_ptr<Message>, ErrorType, int);
   virtual void onWork();

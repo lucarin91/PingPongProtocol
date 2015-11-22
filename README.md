@@ -1,6 +1,8 @@
 # Ping/Pong protocol simulation
 The scope of this project is to simulate the PING/PONG protocol in a GNutella network. The software hime to simulate this kind of protocol, and all the test are done in with this purpuse, but actually the general contruction can bring this software to future extension for other p2p simulation.
 
+![Simulator in action](/img/example.png)
+
 The idea of the software is to create an infinite loop where each time the simulation engine call a peer to execute same of its tasks, that in this specific case are pop a message from the buffer and work with it. To better simulate the this specific protocol the Peer have also, as in the real work, the possibility to wait same amount of time, and then do something.
 
 # Feature

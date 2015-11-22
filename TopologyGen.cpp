@@ -43,7 +43,7 @@ TopologyGen<Peer_Type>::TopologyGen(Config& cfg) : logger(nullptr) {
     c = cfg.lookup("connection");
     cout << "connection: " << c << endl;
 
-    int seed = cfg.lookup("srand");
+    unsigned long seed = cfg.lookup("srand");
     srand(seed);
     cout << "random seed: " << seed << endl;
   } catch (const SettingNotFoundException& nfex) {

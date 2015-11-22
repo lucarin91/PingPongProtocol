@@ -5,7 +5,7 @@ using namespace std;
 void Peer_pp::initTimerTEST() {
   addTimer([] ()->int { return 30; }, [&](time_t now)->void {
 // time_t elapse = 30;
-                     log("FILTER PONG CACHE");
+            log("FILTER PONG CACHE");
 
              for (auto p = this->timeList.begin(); p != this->timeList.end();) {
                try {
@@ -14,12 +14,12 @@ void Peer_pp::initTimerTEST() {
 
                  if (p->tstamp <= now) {
                    if (idlistMsg == p->msg_id) {
-                     log("\tremoved msg " + p->toString());
+                     log("\tremoved (tstamp:" + p->getTime() +")",  *this->pongCache[p->neighbor_id].at(p->original_sender));
                      this->pongCache[p->neighbor_id].erase(p->original_sender);
                    }
                    p = this->timeList.erase(p);
                  } else {
-                     log("\tmantened " + p->toString());
+                     log("\tmantened (tstamp:" + p->getTime()+ ")", *this->pongCache[p->neighbor_id].at(p->original_sender));
                    ++p;
                  }
                } catch (out_of_range e) {
@@ -28,9 +28,9 @@ void Peer_pp::initTimerTEST() {
                }
              }
 
-             for (auto& n: this->pongCache) {
-               for (auto& p: n.second) log("CACHE: ", *p.second);
-             }
+            //  for (auto& n: this->pongCache) {
+            //    for (auto& p: n.second) log("CACHE: ", *p.second);
+            //  }
            });
 }
 
@@ -74,7 +74,9 @@ bool Peer_pp::addPongCache(int neighbor, unique_ptr<Message>m) {
   int id     = m->id;
 
   Peer_p::addPongCache(neighbor, move(m));
-        log("ADD TO CACHE!");
+
+  log("\tcache entry expire after " + to_string(Peer_pp::CACHE_TIME));
+
   this->timeList.emplace(
     this->timeList.end(),
     time(0) + Peer_pp::CACHE_TIME,

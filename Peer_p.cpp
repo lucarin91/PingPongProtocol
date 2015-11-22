@@ -17,7 +17,7 @@ Peer_p::Peer_p() : Peer(nullptr) {
 
 void Peer_p::initTimer() {
   addTimer([]()->int{return rand()%30+5;}, [&](time_t)->void {
-    log("send Pings...");
+    log("send PINGs...");
     sendPing();
   });
 }
@@ -27,9 +27,9 @@ void Peer_p::onValidPing(unique_ptr<Message> msg, int sender) {
     sendChachedPong(sender, move(msg));
 }
 
-void Peer_p::onValidPong(unique_ptr<Message> msg, int sender) {
+void Peer_p::onValidPong(unique_ptr<Message> msg, int sender, int to) {
     addPongCache(sender, unique_ptr<Message>(new Message(*msg)));
-    forwordOne(move(msg), sender);
+    forwordOne(move(msg), to);
 }
 
 bool Peer_p::addPongCache(int neighbor, unique_ptr<Message> m) {
@@ -37,7 +37,7 @@ bool Peer_p::addPongCache(int neighbor, unique_ptr<Message> m) {
   log("\tadd PONG to the cache", *m);
   auto got = this->pongCache.find(neighbor);
   if (got != this->pongCache.end()) {
-    log("\tadd to existing list",  *m);
+    //log("\tadd to existing list",  *m);
     unique_ptr<Message> msgPtr (new Message(*m));
     // auto ret = got->second.emplace(m->originalSender, move(msgPtr));
     // log("\tinsertion: "+ to_string(ret.second));
@@ -45,7 +45,7 @@ bool Peer_p::addPongCache(int neighbor, unique_ptr<Message> m) {
     got->second[m->originalSender] = move(msgPtr);
     return true;
   } else {
-    log("\tcreate a new list",     *m);
+    //log("\tcreate a new list",     *m);
     unordered_map< int, unique_ptr<Message> > map;
     map.emplace(m->originalSender,unique_ptr<Message>(new Message(*m)));
     this->pongCache.emplace(neighbor, move(map));
