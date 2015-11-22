@@ -1,3 +1,0 @@
-/home/luca/PingPongProtocol/CMakeFiles/PingPongProtocol_v1.dir
-/home/luca/PingPongProtocol/CMakeFiles/PingPongProtocol_v2.dir
-/home/luca/PingPongProtocol/CMakeFiles/PingPongProtocol_v3.dir
