@@ -32,10 +32,11 @@ public:
 
 protected:
 
-  void         onValidPing(unique_ptr<Message>,
-                           int) override;
-  void         onValidPong(unique_ptr<Message>,
-                           int) override;
+  void onValidPing(unique_ptr<Message>,
+                   int) override;
+  void onValidPong(unique_ptr<Message>,
+                   int,
+                   int) override;
 
   virtual bool addPongCache(int,
                             unique_ptr<Message>);

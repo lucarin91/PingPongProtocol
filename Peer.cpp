@@ -13,11 +13,13 @@ Peer::Peer(shared_ptr<Logger>logger) :
 Peer::Peer() : Peer(nullptr) {}
 
 bool Peer::addNeighbor(shared_ptr<Peer>p) {
-  auto got = this->neighbor.find(p->getUID());
+  int pUID = p->getUID();
+  int myUID = getUID();
+  auto got = this->neighbor.find(pUID);
 
-  if ((this->UID != p->getUID()) && (got == this->neighbor.end())) {
-    this->neighbor.emplace(p->getUID(), p);
-    p->neighbor.emplace(p->getUID(), shared_from_this());
+  if ((myUID != pUID) && (got == this->neighbor.end())) {
+    this->neighbor.emplace(pUID, p);
+    p->neighbor.emplace(myUID, shared_from_this());
     return true;
   } else return false;
 }
@@ -58,7 +60,7 @@ void Peer::addTimer(function<int()>sec, function<void(time_t)>f) {
 
   // cout << "TIMER "<< ctime(&t) << endl;
 
-  this->timers.push_back(TimeStr(time(0) + secCont, sec, f));
+  this->timers.push_back(TimeStr(t, sec, f));
 }
 
 void Peer::onValidPing(unique_ptr<Message>msg, int sender) {
@@ -69,8 +71,8 @@ void Peer::onValidPing(unique_ptr<Message>msg, int sender) {
              sender);
 }
 
-void Peer::onValidPong(unique_ptr<Message>msg, int sender) {
-  forwordOne(move(msg), sender);
+void Peer::onValidPong(unique_ptr<Message>msg, int, int to) {
+  forwordOne(move(msg), to);
 }
 
 void Peer::onErrorMsg(unique_ptr<Message>msg, ErrorType error, int) {
@@ -93,7 +95,12 @@ void Peer::onErrorMsg(unique_ptr<Message>msg, ErrorType error, int) {
   msg.reset();
 }
 
-void Peer::onWork() {}
+void Peer::onWork() {
+  // for (auto& p : this->neighbor) {
+  //   auto t = p.second.lock();
+  //   log("neighbor_id:"+to_string(p.first)+" neighbor_id:"+to_string(t->getUID()));
+  // }
+}
 
 void Peer::work(int quanto) {
   checkTimers();
@@ -136,7 +143,7 @@ void Peer::work(int quanto) {
             if (got->second != -1) {
               log("received valid msg", *msg);
               msg->lastSender = this->UID;
-              onValidPong(move(msg), sender);
+              onValidPong(move(msg), sender ,got->second);
             } else {
               log("received my PONG!", *msg);
               msg->lastSender = this->UID;
@@ -170,6 +177,7 @@ void Peer::forwordAll(unique_ptr<Message>m, int notSendId) {
 
 void Peer::forwordOne(unique_ptr<Message>m, int to) {
   try {
+    //log("TRY TO SEND TO "+to_string(to));
     auto p = this->neighbor.at(to).lock();
     p->putMessage(move(m));
     incrementNumberMsg();
@@ -180,9 +188,9 @@ void Peer::forwordOne(unique_ptr<Message>m, int to) {
 
 void Peer::sendPing() {
   int id = Message::getNextID();
+  this->pingTable.emplace(id, -1);
 
   for (auto& p : this->neighbor) {
-    this->pingTable.emplace(id, -1);
     auto t = p.second.lock();
     t->putMessage(unique_ptr<Message>(new Message(id, MsgType::PING, this->UID)));
   }
