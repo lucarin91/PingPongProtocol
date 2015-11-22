@@ -61,11 +61,11 @@ int main(int argc, char *argv[]) {
     // T.startPing(1);
     unsigned long nMsg = 0;
 
-    #if 1
+    #if 0
     time_t end = time(0)+60*2;
     while(time(0)<end) {
     #endif
-    #if 0
+    #if 1
     for (int i = 0; i < step; i++) {
     #endif
       unsigned long stepMsg = 0;

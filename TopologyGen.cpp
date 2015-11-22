@@ -136,7 +136,7 @@ void TopologyGen<Peer_Type>::simulate(unsigned int         milliseconds,
     this->peers[i]->work(quanto);
     cb(*this->peers[i]);
 
-    if (milliseconds != 0) usleep(milliseconds * 1000);
+    /*if (milliseconds != 0)*/ usleep(milliseconds * 1000);
   }
 }
 
