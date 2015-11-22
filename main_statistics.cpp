@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
     unsigned long nMsg = 0;
 
     #if 1
-    time_t end = time(0)+60*5;
+    time_t end = time(0)+60*2;
     while(time(0)<end) {
     #endif
     #if 0
