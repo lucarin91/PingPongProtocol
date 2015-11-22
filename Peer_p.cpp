@@ -16,7 +16,7 @@ Peer_p::Peer_p() : Peer(nullptr) {
 }
 
 void Peer_p::initTimer() {
-  addTimer([]()->int{return rand()%30+5;}, [&](time_t)->void {
+  addTimer([]()->int{return rand()%25+5;}, [&](time_t)->void {
     log("send PINGs...");
     sendPing();
   });

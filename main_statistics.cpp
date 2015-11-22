@@ -61,9 +61,13 @@ int main(int argc, char *argv[]) {
     // T.startPing(1);
     unsigned long nMsg = 0;
 
-    // time_t end = time(0)+60*5;
-    // while(time(0)<end) {
+    #if 1
+    time_t end = time(0)+60*2;
+    while(time(0)<end) {
+    #endif
+    #if 0
     for (int i = 0; i < step; i++) {
+    #endif
       unsigned long stepMsg = 0;
       T.simulate(work, [&](Peer& p) -> void {
         stepMsg += p.getLastStatistics();

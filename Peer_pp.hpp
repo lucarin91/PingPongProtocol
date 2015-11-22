@@ -55,7 +55,7 @@ struct ListNode {
 };
 
 class Peer_pp : public Peer_p {
-  static const int K          = 3;
+  static const int K          = 5;
   static const int CACHE_TIME = 60;
 
   // unordered_map<int, unordered_map<int, unique_ptr<Message> > > pongCache;
