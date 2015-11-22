@@ -11,9 +11,8 @@
 #include <cmath>
 #include "Peer.hpp"
 #include "Peer_p.hpp"
-
-#include "Message.hpp"
-#include "Logger.hpp"
+#include "../Message.hpp"
+#include "../Helper/Logger.hpp"
 
 using namespace std;
 

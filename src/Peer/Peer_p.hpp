@@ -10,8 +10,8 @@
 #include <string>
 #include <cmath>
 #include "Peer.hpp"
-#include "Message.hpp"
-#include "Logger.hpp"
+#include "../Message.hpp"
+#include "../Helper/Logger.hpp"
 
 using namespace std;
 

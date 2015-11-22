@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "Message.hpp"
+#include "../Message.hpp"
 
 using namespace std;
 
