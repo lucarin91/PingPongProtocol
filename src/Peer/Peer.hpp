@@ -9,8 +9,8 @@
 #include <time.h>
 #include <string>
 #include <cmath>
-#include "Message.hpp"
-#include "Logger.hpp"
+#include "../Message.hpp"
+#include "../Helper/Logger.hpp"
 
 using namespace std;
 

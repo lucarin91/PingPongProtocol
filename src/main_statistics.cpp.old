@@ -2,13 +2,13 @@
 #include <vector>
 #include <unordered_map>
 #include <libconfig.h++>
-#include "Peer.hpp"
-#include "Peer_p.hpp"
-#include "Peer_pp.hpp"
-#include "Logger.hpp"
+#include "Peer/Peer.hpp"
+#include "Peer/Peer_p.hpp"
+#include "Peer/Peer_pp.hpp"
+#include "Helper/Logger.hpp"
 #include "TopologyGen.hpp"
 #include "TopologyGen.cpp"
-#include "ArgsParser.hpp"
+#include "Helper/ArgsParser.hpp"
 
 using namespace std;
 using namespace libconfig;

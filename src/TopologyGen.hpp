@@ -7,9 +7,9 @@
 #include <cmath>
 #include <unistd.h>
 #include <libconfig.h++>
-#include "Peer.hpp"
-#include "Peer_p.hpp"
-#include "Logger.hpp"
+#include "Peer/Peer.hpp"
+#include "Peer/Peer_p.hpp"
+#include "Helper/Logger.hpp"
 
 using namespace std;
 using namespace libconfig;
