@@ -108,6 +108,7 @@ int main(int argc, char *argv[]) {
   }
 
   cout << nMsg << endl;
+  delete T;
   return 0;
 }
 
