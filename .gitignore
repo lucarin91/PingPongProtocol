@@ -4,6 +4,9 @@ build
 *.o
 *.log
 .idea
+PingPongProtocol_v1
+PingPongProtocol_v2
+PingPongProtocol_v3
 CMakeFiles
 cmake_install.cmake
 CMakeCache.txt
