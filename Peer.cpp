@@ -193,5 +193,6 @@ void Peer::sendPing() {
   for (auto& p : this->neighbor) {
     auto t = p.second.lock();
     t->putMessage(unique_ptr<Message>(new Message(id, MsgType::PING, this->UID)));
+    incrementNumberMsg();
   }
 }
