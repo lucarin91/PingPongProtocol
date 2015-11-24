@@ -16,6 +16,8 @@ using namespace libconfig;
 unsigned sleepTime = 500;
 unsigned work      = 1;
 
+unsigned short synbol = 0;
+
 
 int main(int argc, char *argv[]) {
   char  *cfgName    = ArgsParser::getArgument(argc, argv, "-c");
@@ -23,11 +25,9 @@ int main(int argc, char *argv[]) {
   int    N          = Nchar ? atoi(Nchar) : 0;
   char  *conChar    = ArgsParser::getArgument(argc, argv, "-p");
   double connection = conChar ? stod(conChar) : 0;
-  char  *seedChar   = ArgsParser::getArgument(argc, argv, "-r");
-  long   seed       = seedChar ? stol(seedChar) : time(0);
   char  *stepChar   = ArgsParser::getArgument(argc, argv, "-s");
   int    step       = stepChar ? atoi(stepChar) : 0;
-
+  bool print = ArgsParser::existArgument(argc,argv,"--print");
   shared_ptr<Logger> logger(new Logger());
 
 #if V1
@@ -66,19 +66,22 @@ int main(int argc, char *argv[]) {
 
     T->print();
   } else if  (N && connection) {
+    char  *seedChar   = ArgsParser::getArgument(argc, argv, "-r");
+    long   seed       = seedChar ? stol(seedChar) : time(0);
     shared_ptr<Logger> tLogger(new Logger("topology_test.log"));
 #if V1
     T = new TopologyGen<Peer>(N, connection, seed, tLogger);
+    T->startPing(1);
 #endif // if V1
 #if V2
-    T = new TopologyGen<Peer_p>(N, connection, seed, logger);
+    T = new TopologyGen<Peer_p>(N, connection, seed, tLogger);
 #endif // if V2
 #if V3
-    T = new TopologyGen<Peer_pp>(N, connection, seed, logger);
+    T = new TopologyGen<Peer_pp>(N, connection, seed, tLogger);
 #endif // if V3
     sleepTime = 0;
     logger    = nullptr;
-    step      = 1000;
+    //step      = 1000;
   } else {
     std::cout <<
     "-c <conf> \t the name of the configuration file, if given only the step number are consider"
@@ -105,8 +108,19 @@ int main(int argc, char *argv[]) {
                                      stepMsg) + " - TOT_MSG: " + to_string(
                                      nMsg) + " <<<<<<<<<<<<<<<<<\n\n");
     }
-  }
+    //|/-\ |/-\
 
+    if (print){
+      cout << "\r" << (75<++synbol%100?"\\":
+                       50<synbol%100?"-":
+                       25<synbol%100?"/":
+                       "|") << " Total Number of MSG: " << nMsg <<flush;
+
+                       //usleep(10000);
+                       //synbol++;
+                     }
+  }
+  if (print) cout<<endl;
   cout << nMsg << endl;
   delete T;
   return 0;
