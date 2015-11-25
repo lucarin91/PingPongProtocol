@@ -1,25 +1,25 @@
 # Ping/Pong protocol simulation
-The scope of this project is to simulate the Ping/Pong protocol in a Gnutella network. The software aim to simulate this kind of protocol, and all the test are done in with this purpose, but actually the general structure of the project can lead to future extension and simulation of other p2p protocal.
+The goal of this project is to simulate the Ping/Pong protocol in a Gnutella network. The software aims to simulate this kind of protocol, and all the tests are performed with this purpose, but actually the general structure of the project can lead to future work, such as implementations of other Peer-to-Peer (P2P) protocols.
 
 ![Simulator in action](img/example-small.jpg)
 
-Briefly the software have an *infinite* loop where each time the simulation engine call a peer to execute same tasks, usually pop a message out of the message queue and work with it. To better simulate the this specific protocol the peer have also the possibility to set a time out, and execute something task, as send a ping, after that.
+Briefly, the software is based on an *infinite* loop during which peers are repeatedly asked to perform a task, usually popping some information out of a message queue and elaborating it. To better simulate this specific protocol the peers also have the possibility of setting up a time interval and performing an assigned task periodically.
 
-# Feature
-- Random peer topology generation, given the number of nodes and the probability of connection.
-- Probe and log a set of specific peers, either in the standard output or in one and more file.
+# Features
+- Random peer topology generation, given the number of nodes and the probability of two nodes being connected.
+- Probing and logging a set of specific peers, either onto the standard output or onto file(s).
 - Simple json like configuration file.
-- Two different mode: simulation with the log of the behaver of the peer and simple message analyses.
-- Three type of implementation of the Ping/Pong protocol, on demand, with simple cache and dynamic cache.
-- Simple Peer interface easily extendibles with the onEvent methods.
+- Two different operational modes: simulation with log printing of the behaviour of the peer or simple message analysis.
+- Three type of implementation of the Ping/Pong protocol: *on demand*, with *simple caching* and *dynamic caching*.
+- Simple Peer interface easily extendible with the onEvent methods.
 
 
 # How To Use it
-## Requirement:
+## Requirements:
 - Linux system
 - g++ >= 4.8 with c++11 support
 - cMake >= 3.0
-- libconfig++, on ubuntu/debian system just `sudo apt-get update && sudo apt-get install libconfig++8-dev -y`
+- libconfig++, on ubuntu/debian system just run `sudo apt-get update && sudo apt-get install libconfig++8-dev -y`
 
 ## Download and Install
 Download the last version of the software with git command or by downloading the zip file:
@@ -27,7 +27,7 @@ Download the last version of the software with git command or by downloading the
 cd ~
 git clone ...
 ```
-Go inside the created directory and create the build folder where compile the program:
+Go inside the created directory and create the build folder where to compile the program:
 ```
 mkdir build && cd build
 ```
@@ -36,75 +36,76 @@ create the makefile with cmake and start the compilation:
 cmake ..
 make
 ```
-Now the simulator is correctly compiled and you can find the three version of the simulation in different executable in the `/bin` folder inside the `PingPongProtocal` directory:
-- `PingPongProtocal_v1` the first version without cache.
-- `PingPongProtocal_v2` the second version with simple cache.
-- `PingPongProtocal_v3` the third version with the dynamic cache.
+Now the simulator is correctly compiled and you can find three versions choose among the tree different implementations (as aforementioned) by selecting one of the executable within the `/bin` folder inside the `PingPongProtocol` directory:
+- `PingPongProtocol_v1` the first version without caching.
+- `PingPongProtocol_v2` the second version with simple caching.
+- `PingPongProtocol_v3` the third version with the dynamic caching.
 
 ## How To Run it
-To run one of the three simulation you have to create a configuration file or use one of the given example. For instance you can ru the silumation of the second version of the protocol with the configuration file `topology_2.cfg`, with the following:
+To run one of the three simulations you have to create a configuration file or use one of the given examples. For instance you can run the simulation of the second version of the protocol by using the configuration file `topology_2.cfg`, with the following:
 ```
 bin/PingPongProtocal_v2 -c example/topology_2.cfg
 ```
-That configuration file create a random topology with 50 peers, 0.1 as connections probability and a random seed of 234234324443334. Instead in the *logger* property is specified witch peer have to be logged and where, in the specific example: only the peer 23, 10, 3 and 15 have to be logged, and respectelly on the standard output for the first two and the file  `pippo.log` for the second 2. It's also specified that the random graph topology of the peer have to be write to the `topology.log` file.
+That configuration file creates a random topology with 50 peers, 0.1 as connections probability and a seed of 234234324443334. Instead in the *logger* property is specified which peer has to be logged and where; in the specific example: only the peers 23, 10, 3 and 15 print out their logs, and respectively onto the standard output for the first couple and onto the file  `pippo.log` for the second couple. It is also specified that the random graph topology of the peers has to be written into the `topology.log` file.
 
-Are different option on the executable, the `-c` say that a configuration file is given, but can pass also the number of step of the simulation loop with the parameter `-s`.
+There are different selectable options in order to launch the executable: the `-c` that specifies a configuration file is given, the `-s` to specify the number of simulation steps to be run.
 
-To just use the simulator only for print the number of message in the network and without any other additional information, for example to run same statistics, you can use instead the parameters:
-- `-n` number of node in the network
-- `-p` probability of connections
-- `-r` the random seed
+To use the simulator only for printing the number of messages in the network and without any other additional information, for example to get some statistics, you can use instead the parameters:
+- `-n` number of nodes in the network
+- `-p` probability of connection between two peers
+- `-r` to sepcify the seed of the random generator.
 
-If you use at least one of them all the printing information are disabled. A possible command in this sense can be:
+If you use at least one of the latter options, then all the printing information is disabled. A possible command in this sense can be:
 ```
 bin/PingPongProtocal_v2 -n 1000 -p 0.1 -s 1000 -r 4815162342   
 ```
 
-# Key point in the Ping/Pong implementation
-In this section we will see all the key idea behind the implementation of the three version of the Ping/Pong protocol. In general we can say that all the simulation is about the row communication of the peer and how the message are distributed in the network; for this reason there isn't any kind of simulation of the socket connection or error in the network communication.
+# Key points in the Ping/Pong implementation
+In this section we will skim through all the key ideas behind the implementation of the three versions of the Ping/Pong protocol. In general we can say that all the simulation is about the raw communication of the peer and how the messages are distributed in the network; for this reasons there is no kind of simulation for what concerns the connection via sockets nor for the error occurring during network communication.
 
 ## On demand ping
-This is the base structure of the ping/pong protocol, the peer are externally triggered and broadcasts a ping to all its neighbors, this is done by using the method `putMessage(Message)` which push a new message on the other peer's queue. Then all the peer that receive a Ping respond with a Pong and forward the ping to the other connected peer.
+In the following, the base structure of the Ping/Pong protocol is described in its details. Each peer is programmatically triggered and broadcasts a ping message to its neighbours, this is done by invoking the method `putMessage(Message)` which pushes a new message on the receiver peer queue. Then all the peer that receive a Ping respond with a Pong and forward the ping to their neighbours.
 
-An important aspect is how the Pong message are routing toward the original sender of the ping. To achieve this is used an HashMap in which store the original sender of every received Ping message. This structure have as key the id of the message and as value the UID of the neighbor that send that message (in general it can be different from the original sender). In this way exploiting this information the peers can hoop by hoop back routing the Pong to the original sender. More in detail this is the used structure:
+An important aspect is how the Pong messages are routed back towards the original sender of the ping. To achieve this a HashMap is exploited to store the original sender of every received Ping message. This structure adopts as key the id of the message and as value the UID (Unified Identifier) of the peer that has sent that message (in general it can be different from the original sender). In this way the peers can perform backward routing hop-by-hop for the Pong to reach the original sender. Here is the definition of the HashMap:
 
 ```
 std::unordered_map<int, int> pingTable;
 ```
 
-It's important to consider that the access of this structure is in constant time, so this create the minimal overhead every time the peer receive one Pong. The same structure is also used to recognize the Ping sent by the peer itself or the its answer Pong, in fact each time a peer send a new ping it insert in the pingTable the id of the message and a constant -1.
-In this way is possible to do same other check during the ping forwarding, to improve the effective of the broadcast and reduce the content replication:
-- not forwarded the ping already forwarded, is possible that there is a cycle in the peer graph.
-- recognize and don't forward its Ping.
-- recognize and don't forward its Pong.
+It is important to consider that the access to this structure is constant in time, so that a minimal overhead is paid every time the node receives a Pong.
 
-## Simple Pong Cache
-This version of the peer have all the structure explained before for the on demand ping, but it also include:
-- the ping are sent after a variable number of second (by default random between 5 and 30 seconds)
-- the peer exploit a cache of Pong, that avoid to forward every time all the Ping to the neighbor.
+The same structure is also used to recognise the Ping sent by the peer itself or its answer Pong, in fact each time a peer sends a new ping it inserts it into the pingTable the id of the message and a constant -1 (to recall that the message was generated at that peer).
+Doing so, it is possible to perform some other check during the ping forwarding, to improve the effectiveness of the broadcast and to reduce content replication, i.e.:
+- already forwarded pings are not forwarded (it is possible that there is a cycle in the peer graph),
+- both pings and pongs generated at one peer are recognised by that specific peer and retained from forwarding.
 
-The implementation of the pongCache is driven by the idea to have a fasten data structure with constant time for insertion and retrieval, because it have to be access every time a peer receive a new ping from the network.
+## Simple Pong Caching
+This version of the peer has all the structure explained before for the on demand ping, but it also includes these features:
+- the ping are sent after a variable number of seconds (by default between 5 and 30 seconds)
+- the peer exploits a cache of Pongs, thus avoiding to forward every time all every incoming ping messages to its neighbours.
 
-Practically the structure is a HashMap of HashMap, to exploit the constant access to retrieve the cache entry for one of the neighbor, and to avoid replication of the Pong of the same original sender.
+The implementation of the pongCache is driven by the idea to have a faster data structure with constant time for insertion and retrieval, because it needs to be accessed every time a peer receives a new ping from the network.
+
+Practically the structure is a HashMap of HashMap, to exploit the constant access time to retrieve the cache entry for one of the neighbor and to avoid replication of the Pong of the original sender.
 ```
 std::unordered_map<int, // neighbor id
                    std::unordered_map<int, // original sender
                                       unique_ptr<Message>>> pongCache;
 ```
-So logically the structure it can be consider a set of different caches, one for every neighbor, in which inside there are a key value pair, with the original sender of the message and the message it self.
+So logically the structure can be considered as a set of many distinct caches, one for each neighbour, in which there are key-value pairs, with the original sender of the message and the message itself.
 
-To clarify this type of structure we can analyses the behavior of the cache when it will be filled by new Pong and when this Pong are retrieved and send back to the requester.
+To clarify this type of structure we can analyse the behaviour of the cache when it is filled by incoming pongs and when this pongs are retrieved and sent back to the requester.
 
-First of all every time a new Pong arrive from one of the incoming link this new message is saved in the cache of that neighbor using the UID of the original sender as second index of the structure. In this way every time a new Pong from the same original sender arrive it override the old one and not create any duplication in the cache.
+First of all, every time a new Pong arrives from one of the incoming links this new message is saved in the cache of that neighbor using the UID of the original sender as second index of the structure. Consequently, every time a new Pong from the same sender is received, it overrides the older one without introducing any data duplication.
 
-In the other case study when a new Ping arrive from one of the neighbor ping, it starts a loop on all the cache of the neighbor and if at least one message is present on that cache, it will be send to the requester and the ping is not forwarding on that link.
+In the other case, when a new Ping arrives from one of the neighbours, a loop starts over the cache and if at least one message is present on that cache, it will be sent back to the requester , without forwarding the ping. Otherwise, for empty cache entries, the classic behaviour is implemented.
 
 # Dynamic Pong Cache
-This version of the peer have all the cache facility of the previous version, but improve the system with a dynamic cache where every entry are deleted after a number of second (by default 60). To create this new feature the previous cache structure is kept untouched and instead is added a Linked List where put all the time information needed by filtering process.
+This version of the peer has all the cache facility of the previous versions, but improves the system with a dynamic cache where every entry is deleted after a number of seconds (by default 60). To add this new feature the previous cache structure is kept untouched and a LinkedList is added  where to put all the time information needed by the filtering process.
 
-More in detail every time the peer receive a Pong it store the it in the pongCache as in the previous example, but now it also add a new entry in the timeList at the end of the list, with the the timestap generated by adding the actual time to the default experience value of 60 seconds. In this way the list is every time ordered by the time stamp of the cache entry.
+More in detail every time the peer receives a Pong it stores it in the pongCache as in the previous example, but now it also adds a new entry at the end of the timeList, with the the timestamp generated by adding the actual time to the default expiring value of 60 seconds. In this way the list is kept ordered on the timestamps of the cache entries.
 
-Than every 30 second by default the filtering process of the cache start, and the list is scanned to find element with a time stamp less of the actual time. When a entry with this characteristic is found the system use the information stored inside the linked list node to remove the cache entry in the pongCache, and also the entry in the timeList is popped out. It can be easily see that the process filtering process can be stop before that all the list is scanned, it is because when a list node with a greater time stamp of the actual time is found, no other node with less time stamp can be found in the list.
+Then, every 30 seconds by default the filtering process of the cache starts and the list is scanned to find elements with a time stamp less of the actual time. When a entry with this characteristic is found the system uses the information stored inside the linked list node to remove the cache entry in the pongCache and also the entry in the timeList is popped out. It can be easily seen that the filtering process can be stopped before that all the list is scanned since when a list node with a greater time stamp of the actual time is found, no other node with a smaller time stamp can be found in the (ordered) list.
 
 # Implementation Detail
 In this section we will see more in detail the structure of the classes with a description of the more relevant constructor and method for each of them.
@@ -183,4 +184,13 @@ Then to add the capability to send the Pong store in the cache only if they are 
 This class add also another timeout that by default every 60 second by default check and clear the cache entry, as it is describe in the previous section.
 
 # Statistics
-One of the aim of this project is to run same analysis on the Ping/Pong protocol, and verify is the proposed cache implementation, work in practice, and if the system can scale in a large system. It's decide to confront only the two version of the cache implementation, because the first version doesn't have any periodically ping system and so can be directly confronted two the other.
+One of the aim of this project is to run same analysis on the Ping/Pong protocol and the implemented cache system. In this sense the analysis done on the program take care of the number of message that floud the network in a given amount of time. Given that the first implementation of the protocol with the *on demand ping* is not confrontable with the other two type which send cicling ping message, two different analysis are done.
+All the analysis are done on random network with 100 to 1000 peer and witn probability of connection of 0.1, the simulation process is taken running for 5000 step, and at the and anly the number of message in the wall system are ploted.
+In this first fraph we plot the the distribution of the mesage of the first implementation, in this case in all the computation is consider the wall mesage send in the system after that the peer 0 send a ping.
+
+
+In this second graph we can se the distribution of the message of the two other version with the cache system:
+
+![Simulator in action](img/plot2.png)
+
+We can see that there isn't much different in the two version, this can be given by the fact that if the network is static, the second implementation didn't give much different, but can only create more message, because the network entry are periodically dropped.
