@@ -16,7 +16,7 @@ Briefly, the software is based on an *infinite* loop during which peers are repe
 	 * [On demand ping](#on-demand-ping)
 	 * [Simple Pong Caching](#simple-pong-caching)
 	 * [Dynamic Pong Cache](#dynamic-pong-cache)
- * [Implementation Detail](#implementation-detail)
+ * [Implementation Details](#implementation-details)
 	 * [TopologyGen](#topologygen)
 	 * [Peer](#peer)
 	 * [Message](#message)
@@ -126,7 +126,7 @@ More in detail every time the peer receives a Pong it stores it in the pongCache
 
 Then, every 30 seconds by default the filtering process of the cache starts and the list is scanned to find elements with a time stamp less of the actual time. When a entry with this characteristic is found the system uses the information stored inside the linked list node to remove the cache entry in the pongCache and also the entry in the timeList is popped out. It can be easily seen that the filtering process can be stopped before that all the list is scanned since when a list node with a greater time stamp of the actual time is found, no other node with a smaller time stamp can be found in the (ordered) list.
 
-# Implementation Detail
+# Implementation Details
 In this section we will see more in detail the structure of the classes with a description of the more relevant constructor and method for each of them.
 The main class in the project are the `TopologyGen`, that manage and generate the peer structure, the `Peer` that represent a peer entity and the `Message` that simulate the structure of the Ping/Pong message with the needed information.
 Than there are same utility class as the `ArgsParser` to read the argument of the command line and the `Logger` used to probe and log the activity of a set of peers.
