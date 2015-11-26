@@ -1,7 +1,7 @@
 # Ping/Pong protocol simulation
 The goal of this project is to simulate the Ping/Pong protocol in a Gnutella network. The software aims to simulate this kind of protocol, and all the tests are performed with this purpose, but actually the general structure of the project can lead to future work, such as implementations of other Peer-to-Peer (P2P) protocols.
 
-![Simulator in action](img/example-small.jpg)
+<center><img src="img/example-small.jpg"/><p><small>A possible output of the simulator</small></p></center>
 
 Briefly, the software is based on an *infinite* loop during which peers are repeatedly asked to perform a task, usually popping some information out of a message queue and elaborating it. To better simulate this specific protocol the peers also have the possibility of setting up a time interval and performing an assigned task periodically.
 
@@ -144,13 +144,19 @@ It is the class specifying all the characteristic of a peer in the network, it h
 - `bool addNeighbor(shared_ptr<Peer> p)` add a new neighbor to the peer, this method simulate a bidirectional connection to a new peer. In this way after the executing of the method the two peers will have in their neighbor list the new connection.
 
 In the Peer class there is also other event based method used to implement the actual behavior of the Ping/Pong message protocal. This method are actually the one extended by the `Peer_p` an `Peer_pp` class. More in detail we can see:
+
 - `virtual void onValidPing(unique_ptr<Message> msg , int sender_neighbor)` and `virtual void onValidPong(unique_ptr<Message> msg, int sender_neighbor)` called when the peer receives a valid Ping or Pong (the TTL is not 0) with the received message and the neighbor that send it.
+
 - `virtual void onErrorMsg(unique_ptr<Message> msg, ErrorType error, int neighbor)` called when a not valid message is sent to the peer, it contains a `ErrorType` that represent the specific error of the message. It can be one of the following:
-- `ALREADY_FORWARDED_PING` received a ping that is already forwarded and already is in my ping table.
-- `UNOKNOW_PONG` received a Pong for witch there isn't information in the ping table, so the routing back information is missing.
-- `EXPIRED_MSG` the message received have a expired TTL.
-- `MY_PING` receive my Ping
-- `MY_PONG` receive my Pong, so actually it is good, it is here only to have a more general structure of the system.
+    + `ALREADY_FORWARDED_PING` received a ping that is already forwarded and already is in my ping table.
+
+    + `UNOKNOW_PONG` received a Pong for witch there isn't information in the ping table, so the routing back information is missing.
+
+    + `EXPIRED_MSG` the message received have a expired TTL.
+
+    + `MY_PING` receive my Ping
+
+    + `MY_PONG` receive my Pong, so actually it is good, it is here only to have a more general structure of the system.
 
 ## Message
 This class represent the actual message exchanged between the peers. It don't have the exact structure of the PING/PONG message, but keep all the information needed to simulate the same behavior. The actual field are:
@@ -184,13 +190,17 @@ Then to add the capability to send the Pong store in the cache only if they are 
 This class add also another timeout that by default every 60 second by default check and clear the cache entry, as it is describe in the previous section.
 
 # Statistics
-One of the aim of this project is to run same analysis on the Ping/Pong protocol and the implemented cache system. In this sense the analysis done on the program take care of the number of message that floud the network in a given amount of time. Given that the first implementation of the protocol with the *on demand ping* is not confrontable with the other two type which send cicling ping message, two different analysis are done.
-All the analysis are done on random network with 100 to 1000 peer and witn probability of connection of 0.1, the simulation process is taken running for 5000 step, and at the and anly the number of message in the wall system are ploted.
-In this first fraph we plot the the distribution of the mesage of the first implementation, in this case in all the computation is consider the wall mesage send in the system after that the peer 0 send a ping.
+One of the aim of this project is to run same analysis on the Ping/Pong protocol and the implemented cache system. For this reason the analyses take care of the number of message that flood the network in the different implementations. Obviously the first implementation of the protocol, the on-demand ping, is not confrontable with the other because the peer doesn't periodically generate ping message.
 
+Anyway all analysis are done on random network of different number of peers, from 100 to 1000, the connection probability is set to 0.1 and the simulation runs 2000 steps.
 
-In this second graph we can se the distribution of the message of the two other version with the cache system:
+In this first graph we have plot the the distribution of the message in the on-demand implementation. This analysis only a peer is triggered and so it sends a ping to all its neighbor an wait for the corresponding Pong.
 
-![Simulator in action](img/plot2.png)
+<center><img src="img/plot_ondemand.png"/></center>
 
-We can see that there isn't much different in the two version, this can be given by the fact that if the network is static, the second implementation didn't give much different, but can only create more message, because the network entry are periodically dropped.
+In this second graph we have plot the comparison of the two cache implementations when the number of nodes grouse.
+We can see that those curves are similar to each other, but for the same number of peer the final implementation have alway less number of message that flood the network.
+
+<center><img src="img/plot_cache.png"/></center>
+
+Possible the improvement of the last version van be actually better of this if we consider a dynamic network, where the cache expiring system can is actually better than the second version. But never than less the use of the cache when we have at least K=4 element can achieve a better performance.
