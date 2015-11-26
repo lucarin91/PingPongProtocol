@@ -5,24 +5,24 @@ The goal of this project is to simulate the Ping/Pong protocol in a Gnutella net
 
 Briefly, the software is based on an *infinite* loop during which peers are repeatedly asked to perform a task, usually popping some information out of a message queue and elaborating it. To better simulate this specific protocol the peers also have the possibility of setting up a time interval and performing an assigned task periodically.
 
-**Table of Contents**
-- [Ping/Pong protocol simulation](#)
-- [Features](#)
-- [How To Use it](#)
-	- [Requirements:](#)
-	- [Download and Install](#)
-	- [How To Run it](#)
-- [Key points in the Ping/Pong implementation](#)
-	- [On demand ping](#)
-	- [Simple Pong Caching](#)
-	- [Dynamic Pong Cache](#)
-- [Implementation Detail](#)
-	- [TopologyGen](#)
-	- [Peer](#)
-	- [Message](#)
-	- [Peer_p](#)
-	- [Peer_pp](#)
-- [Statistics](#)
+# Table of Contents
+* [Ping/Pong protocol simulation](#pingpong-protocol-simulation)
+ * [Features](#features)
+ * [How To Use it](#how-to-use-it)
+	 * [Requirements:](#requirements)
+	 * [Download and Install](#download-and-install)
+	 * [How To Run it](#how-to-run-it)
+ * [Key points in the Ping/Pong implementation](#key-points-in-the-pingpong-implementation)
+	 * [On demand ping](#on-demand-ping)
+	 * [Simple Pong Caching](#simple-pong-caching)
+	 * [Dynamic Pong Cache](#dynamic-pong-cache)
+ * [Implementation Detail](#implementation-detail)
+	 * [TopologyGen](#topologygen)
+	 * [Peer](#peer)
+	 * [Message](#message)
+	 * [Peer_p](#peer_p)
+	 * [Peer_pp](#peer_pp)
+ * [Statistics](#statistics)
 
 # Features
 - Random peer topology generation, given the number of nodes and the probability of two nodes being connected.
