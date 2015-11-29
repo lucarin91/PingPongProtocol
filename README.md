@@ -63,7 +63,7 @@ Now the simulator is correctly compiled and you can find three versions choose a
 ## How To Run it
 To run one of the three simulations you have to create a configuration file or use one of the given examples. For instance you can run the simulation of the second version of the protocol by using the configuration file `topology_2.cfg`, with the following:
 ```
-bin/PingPongProtocal_v2 -c example/topology_2.cfg
+bin/PingPongProtocol_v2 -c example/topology_2.cfg
 ```
 That configuration file creates a random topology with 50 peers, 0.1 as connections probability and a seed of 234234324443334. Instead in the *logger* property is specified which peer has to be logged and where; in the specific example: only the peers 23, 10, 3 and 15 print out their logs, and respectively onto the standard output for the first couple and onto the file  `pippo.log` for the second couple. It is also specified that the random graph topology of the peers has to be written into the `topology.log` file.
 
