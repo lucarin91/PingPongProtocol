@@ -18,8 +18,8 @@ Briefly, the software is based on an *infinite* loop during which peers are repe
 	 * [Dynamic Pong Cache](#dynamic-pong-cache)
  * [Implementation Details](#implementation-details)
 	 * [TopologyGen](#topologygen)
-	 * [Peer](#peer)
 	 * [Message](#message)
+	 * [Peer](#peer)
 	 * [Peer_p](#peer_p)
 	 * [Peer_pp](#peer_pp)
  * [Statistics](#statistics)
@@ -37,7 +37,7 @@ Briefly, the software is based on an *infinite* loop during which peers are repe
 ## Requirements:
 - Linux system
 - g++ >= 4.8 with c++11 support
-- cMake >= 3.0
+- cMake >= 2.8
 - libconfig++, on ubuntu/debian system just run `sudo apt-get update && sudo apt-get install libconfig++8-dev -y`
 
 ## Download and Install
@@ -63,7 +63,7 @@ Now the simulator is correctly compiled and you can find three versions choose a
 ## How To Run it
 To run one of the three simulations you have to create a configuration file or use one of the given examples. For instance you can run the simulation of the second version of the protocol by using the configuration file `topology_2.cfg`, with the following:
 ```
-bin/PingPongProtocal_v2 -c example/topology_2.cfg
+bin/PingPongProtocol_v2 -c example/topology_2.cfg
 ```
 That configuration file creates a random topology with 50 peers, 0.1 as connections probability and a seed of 234234324443334. Instead in the *logger* property is specified which peer has to be logged and where; in the specific example: only the peers 23, 10, 3 and 15 print out their logs, and respectively onto the standard output for the first couple and onto the file  `pippo.log` for the second couple. It is also specified that the random graph topology of the peers has to be written into the `topology.log` file.
 
@@ -78,6 +78,8 @@ If you use at least one of the latter options, then all the printing information
 ```
 bin/PingPongProtocal_v2 -n 1000 -p 0.1 -s 1000 -r 4815162342   
 ```
+
+**NOTE:** if you have a 32bit system probably the program crash with a *SettingTypeException*. To solve this issue simply modify the *srand* parameter in the configuration file with a shorter number and without the final L.
 
 # Key points in the Ping/Pong implementation
 In this section we will skim through all the key ideas behind the implementation of the three versions of the Ping/Pong protocol. In general we can say that all the simulation is about the raw communication of the peer and how the messages are distributed in the network; for this reasons there is no kind of simulation for what concerns the connection via sockets nor for the error occurring during network communication.
@@ -126,13 +128,15 @@ More in detail every time the peer receives a Pong it stores it in the pongCache
 
 Then, every 30 seconds by default the filtering process of the cache starts and the list is scanned to find elements with a time stamp less of the actual time. When a entry with this characteristic is found the system uses the information stored inside the linked list node to remove the cache entry in the pongCache and also the entry in the timeList is popped out. It can be easily seen that the filtering process can be stopped before that all the list is scanned since when a list node with a greater time stamp of the actual time is found, no other node with a smaller time stamp can be found in the (ordered) list.
 
+
 # Implementation Details
-In this section we will see more in detail the structure of the classes with a description of the more relevant constructor and method for each of them.
-The main class in the project are the `TopologyGen`, that manage and generate the peer structure, the `Peer` that represent a peer entity and the `Message` that simulate the structure of the Ping/Pong message with the needed information.
-Than there are same utility class as the `ArgsParser` to read the argument of the command line and the `Logger` used to probe and log the activity of a set of peers.
+In this section we will see more in detail the structure of the classes with a deep description of the most relevant parts of them.
+The main class in the project are: `TopologyGen`, that manage and generate the peer structure, `Peer` that represent a peer entity and `Message` that simulate the structure of the Ping/Pong message with the needed information.
+Finally there are same utility class as the `ArgsParser` to read the argument of the command line and the `Logger` used to probe and log the activity of a set of peers.
 
 ## TopologyGen
-This class generates and manages the peer topology, it can random create a peer topology given a configuration file or it possible to manually give an already define vector of peers. Here are the main constructor:
+This class generates and manages the peer topology, it can random create a peer topology given a configuration file or a set of parameters, but it can also receive an already define vector of peers. Here are the main constructor:
+
 - `TopologyGen(vector<shared_ptr<Peer>> peers_list)` create a TopologyGen object given an already define vector of Peers.
 
 - `TopologyGen(Config& configuration_file)`  create a TopologyGen object given a configuration file, it use the parameters in the configuration file to create a random topology.
@@ -142,11 +146,22 @@ This class generates and manages the peer topology, it can random create a peer 
 
 After the creation of the object is possible to interact with the peer by the following method:
 
-- `void simulate(function<void(Peer&)> call_back)` this is the main interface with the peers, this function execute one cycle of simulation among the peers, and after execute the callback function. There are other version of this function in witch is possible to specified, how much work each peer have to compute, and the sleep time between to peer execution.
+- `void simulate(function<void(Peer&)> call_back)` this is the main interface with the peers, this function execute one cycle of simulation among the peers, and after execute the callback function. There are other version of this function in witch is possible to specified, how much work each peer have to compute, and a sleep time between the execution of each peer.
 
 - `void startPing(int p)` manually trigger a given peer to send a ping message to all its neighbor, it is used in the *on demand* version of the Ping/Pong.
 
 - `void print()` this function just print the topology structure of the peers.
+
+
+## Message
+This class represent the actual message exchanged between the peers. It don't have the exact structure of the PING/PONG message, but keep all the information needed to simulate the same behavior. The actual field are:
+- `int id` the unique id of the message.
+- `MsgType type` the type of the message: `PING` or `PONG`
+- `int TTL` the time to live of the message by default it is set to 4
+- `int HOPS` the hops that the message did, how many peer it traverses
+- `int originalSender` it represents the id of the peer that generate the message.
+- `int lastSender` it represent the previous hop sender, in other words the neighbor that send the message to the peer. In a real protocol implementation this information can be taken by the socket connection information, but this simulation each entry in the queue are identically so it is important to distinguish witch neighbor put that message.
+
 
 ## Peer
 It is the class specifying all the characteristic of a peer in the network, it have a list of connected peers, and a message queue where the other peers can put messages. It can be created by the following constructor:
@@ -160,9 +175,9 @@ It is the class specifying all the characteristic of a peer in the network, it h
 
 - `void sendPing()` trigger the peer to broadcast a new ping message to all their neighbor.
 
-- `bool addNeighbor(shared_ptr<Peer> p)` add a new neighbor to the peer, this method simulate a bidirectional connection to a new peer. In this way after the executing of the method the two peers will have in their neighbor list the new connection.
+- `bool addNeighbor(shared_ptr<Peer> p)` add a new neighbor to the peer, this method simulate a bidirectional connection to a new peer. In this way after the executing of this method both the peers will have in their neighbor list the new connection.
 
-In the Peer class there is also other event based method used to implement the actual behavior of the Ping/Pong message protocal. This method are actually the one extended by the `Peer_p` an `Peer_pp` class. More in detail we can see:
+In the Peer class there is also other event based method used to implement the actual behavior of the Ping/Pong protocol. This method are actually the one extended by the `Peer_p` an `Peer_pp` class. More in detail we can see:
 
 - `virtual void onValidPing(unique_ptr<Message> msg , int sender_neighbor)` and `virtual void onValidPong(unique_ptr<Message> msg, int sender_neighbor)` called when the peer receives a valid Ping or Pong (the TTL is not 0) with the received message and the neighbor that send it.
 
@@ -177,17 +192,9 @@ In the Peer class there is also other event based method used to implement the a
 
     + `MY_PONG` receive my Pong, so actually it is good, it is here only to have a more general structure of the system.
 
-## Message
-This class represent the actual message exchanged between the peers. It don't have the exact structure of the PING/PONG message, but keep all the information needed to simulate the same behavior. The actual field are:
-- `int id` the unique id of the message.
-- `MsgType type` the type of the message: `PING` or `PONG`
-- `int TTL` the time to live of the message by default it is set to 4
-- `int HOPS` the hops that the message did, how many peer it traverse
-- `int originalSender` it represent the id of the peer that generate the message the first time.
-- `int lastSender` it represent the previous hop sender, in other words the neighbor that send the message to the peer. In a real protocol implementation this information can be taken by the socket connection information, but this simulation each entry in the queue are identically so it is important to distinguish witch neighbor put that message.
 
 ## Peer_p
-This class extended `Peer` and add the a Pong cache with the possibility to exploit the already saved Pong instead of broadcast every time the Ping and wait for all the Pong. This is implemented by the following method called when a valid Ping or Pong are received:
+This class extended `Peer` and add a Pong cache with the possibility to exploit the previous Pong instead of broadcast every time the Ping. This is implemented by the following method called when a valid Ping or Pong are received:
 
 - `virtual bool addPongCache(int neighbor, unique_ptr<Message> msg)` this store a message in the pongCache using the neighbor_id as key of the HashMap, to achieve constant time retrieve.
 
@@ -206,7 +213,8 @@ struct ListNode {
 Extending the on `addPongCache` method of the `Peer_p` class each time a new pong is added to the cache is also add at the end of the list a new entry of the ListNode struct. The list in this way is organize with ordered time stamp.
 Then to add the capability to send the Pong store in the cache only if they are more that K, also the method `sendChachedPong` of the class `Peer_p` was extended.
 
-This class add also another timeout that by default every 60 second by default check and clear the cache entry, as it is describe in the previous section.
+This class add also another timeout that by default every 60 second check and clear the cache entry, as it is describe in the previous section.
+
 
 # Statistics
 One of the aim of this project is to run same analysis on the Ping/Pong protocol and the implemented cache system. For this reason the analyses take care of the number of message that flood the network in the different implementations. Obviously the first implementation of the protocol, the on-demand ping, is not confrontable with the other because the peer doesn't periodically generate ping message.
