@@ -1,7 +1,9 @@
 # Ping/Pong protocol simulation
+[https://github.com/lucarin91/PingPongProtocol]
+
 The goal of this project is to simulate the Ping/Pong protocol in a Gnutella network. The software aims to simulate this kind of protocol, and all the tests are performed with this purpose, but actually the general structure of the project can lead to future work, such as implementations of other Peer-to-Peer (P2P) protocols.
 
-<center><img src="img/example-small.jpg"/><p><small>A possible output of the simulator</small></p></center>
+![A possible output of the simulator](img/example-small.jpg)
 
 Briefly, the software is based on an *infinite* loop during which peers are repeatedly asked to perform a task, usually popping some information out of a message queue and elaborating it. To better simulate this specific protocol the peers also have the possibility of setting up a time interval and performing an assigned task periodically.
 
@@ -236,11 +238,11 @@ Anyway all analysis are done on random network of different number of peers, fro
 
 In this first graph we have plot the the distribution of the message in the on-demand implementation. In this analysis only one peer is triggered to send the ping message and the total number of message are counted, considering either Ping and Pong.
 
-<center><img src="img/plot_ondemand.png"/></center>
+![The ondemand ping version](img/plot_ondemand.png)
 
 In this second graph we have plot the comparison of the two cache implementations when the number of nodes grows.
 We can see that those curves are similar to each other, but for the same number of peer the final implementation have alway less number of message that flood the network.
 
-<center><img src="img/plot_cache.png"/></center>
+![The two cache implementation](img/plot_cache.png)
 
 Possible the improvement of the last version can be actually better of this if we consider a dynamic network, where the cache expiring system can is actually better than the second version. But never than less the use of the cache when we have at least K=4 element can achieve a better performance.

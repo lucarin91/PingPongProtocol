@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8" />
+      <title>README</title>
+      <style>.markdown-preview, .markdown-preview[data-use-github-style] { font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 1.6; word-wrap: break-word; overflow: scroll; box-sizing: border-box; padding: 20px; background-color: rgb(255, 255, 255); }
+.markdown-preview > :first-child, .markdown-preview[data-use-github-style] > :first-child { margin-top: 0px !important; }
+.markdown-preview > :last-child, .markdown-preview[data-use-github-style] > :last-child { margin-bottom: 0px !important; }
+.markdown-preview a:not([href]), .markdown-preview[data-use-github-style] a:not([href]) { color: inherit; text-decoration: none; }
+.markdown-preview .absent, .markdown-preview[data-use-github-style] .absent { color: rgb(204, 0, 0); }
+.markdown-preview .anchor, .markdown-preview[data-use-github-style] .anchor { position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; }
+.markdown-preview .anchor:focus, .markdown-preview[data-use-github-style] .anchor:focus { outline: none; }
+.markdown-preview h1, .markdown-preview[data-use-github-style] h1, .markdown-preview h2, .markdown-preview[data-use-github-style] h2, .markdown-preview h3, .markdown-preview[data-use-github-style] h3, .markdown-preview h4, .markdown-preview[data-use-github-style] h4, .markdown-preview h5, .markdown-preview[data-use-github-style] h5, .markdown-preview h6, .markdown-preview[data-use-github-style] h6 { position: relative; margin-top: 1em; margin-bottom: 16px; font-weight: bold; line-height: 1.4; }
+.markdown-preview h1 .octicon-link, .markdown-preview[data-use-github-style] h1 .octicon-link, .markdown-preview h2 .octicon-link, .markdown-preview[data-use-github-style] h2 .octicon-link, .markdown-preview h3 .octicon-link, .markdown-preview[data-use-github-style] h3 .octicon-link, .markdown-preview h4 .octicon-link, .markdown-preview[data-use-github-style] h4 .octicon-link, .markdown-preview h5 .octicon-link, .markdown-preview[data-use-github-style] h5 .octicon-link, .markdown-preview h6 .octicon-link, .markdown-preview[data-use-github-style] h6 .octicon-link { display: none; color: rgb(0, 0, 0); vertical-align: middle; }
+.markdown-preview h1:hover .anchor, .markdown-preview[data-use-github-style] h1:hover .anchor, .markdown-preview h2:hover .anchor, .markdown-preview[data-use-github-style] h2:hover .anchor, .markdown-preview h3:hover .anchor, .markdown-preview[data-use-github-style] h3:hover .anchor, .markdown-preview h4:hover .anchor, .markdown-preview[data-use-github-style] h4:hover .anchor, .markdown-preview h5:hover .anchor, .markdown-preview[data-use-github-style] h5:hover .anchor, .markdown-preview h6:hover .anchor, .markdown-preview[data-use-github-style] h6:hover .anchor { padding-left: 8px; margin-left: -30px; text-decoration: none; }
+.markdown-preview h1:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h1:hover .anchor .octicon-link, .markdown-preview h2:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h2:hover .anchor .octicon-link, .markdown-preview h3:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h3:hover .anchor .octicon-link, .markdown-preview h4:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h4:hover .anchor .octicon-link, .markdown-preview h5:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h5:hover .anchor .octicon-link, .markdown-preview h6:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h6:hover .anchor .octicon-link { display: inline-block; }
+.markdown-preview h1 tt, .markdown-preview[data-use-github-style] h1 tt, .markdown-preview h2 tt, .markdown-preview[data-use-github-style] h2 tt, .markdown-preview h3 tt, .markdown-preview[data-use-github-style] h3 tt, .markdown-preview h4 tt, .markdown-preview[data-use-github-style] h4 tt, .markdown-preview h5 tt, .markdown-preview[data-use-github-style] h5 tt, .markdown-preview h6 tt, .markdown-preview[data-use-github-style] h6 tt, .markdown-preview h1 code, .markdown-preview[data-use-github-style] h1 code, .markdown-preview h2 code, .markdown-preview[data-use-github-style] h2 code, .markdown-preview h3 code, .markdown-preview[data-use-github-style] h3 code, .markdown-preview h4 code, .markdown-preview[data-use-github-style] h4 code, .markdown-preview h5 code, .markdown-preview[data-use-github-style] h5 code, .markdown-preview h6 code, .markdown-preview[data-use-github-style] h6 code { font-size: inherit; }
+.markdown-preview h1, .markdown-preview[data-use-github-style] h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: 1.2; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); }
+.markdown-preview h1 .anchor, .markdown-preview[data-use-github-style] h1 .anchor { line-height: 1; }
+.markdown-preview h2, .markdown-preview[data-use-github-style] h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: 1.225; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); }
+.markdown-preview h2 .anchor, .markdown-preview[data-use-github-style] h2 .anchor { line-height: 1; }
+.markdown-preview h3, .markdown-preview[data-use-github-style] h3 { font-size: 1.5em; line-height: 1.43; }
+.markdown-preview h3 .anchor, .markdown-preview[data-use-github-style] h3 .anchor { line-height: 1.2; }
+.markdown-preview h4, .markdown-preview[data-use-github-style] h4 { font-size: 1.25em; }
+.markdown-preview h4 .anchor, .markdown-preview[data-use-github-style] h4 .anchor { line-height: 1.2; }
+.markdown-preview h5, .markdown-preview[data-use-github-style] h5 { font-size: 1em; }
+.markdown-preview h5 .anchor, .markdown-preview[data-use-github-style] h5 .anchor { line-height: 1.1; }
+.markdown-preview h6, .markdown-preview[data-use-github-style] h6 { font-size: 1em; color: rgb(119, 119, 119); }
+.markdown-preview h6 .anchor, .markdown-preview[data-use-github-style] h6 .anchor { line-height: 1.1; }
+.markdown-preview p, .markdown-preview[data-use-github-style] p, .markdown-preview blockquote, .markdown-preview[data-use-github-style] blockquote, .markdown-preview ul, .markdown-preview[data-use-github-style] ul, .markdown-preview ol, .markdown-preview[data-use-github-style] ol, .markdown-preview dl, .markdown-preview[data-use-github-style] dl, .markdown-preview table, .markdown-preview[data-use-github-style] table, .markdown-preview pre, .markdown-preview[data-use-github-style] pre { margin-top: 0px; margin-bottom: 16px; }
+.markdown-preview hr, .markdown-preview[data-use-github-style] hr { height: 4px; padding: 0px; margin: 16px 0px; border: 0px none; background-color: rgb(231, 231, 231); }
+.markdown-preview ul, .markdown-preview[data-use-github-style] ul, .markdown-preview ol, .markdown-preview[data-use-github-style] ol { padding-left: 2em; }
+.markdown-preview ul.no-list, .markdown-preview[data-use-github-style] ul.no-list, .markdown-preview ol.no-list, .markdown-preview[data-use-github-style] ol.no-list { padding: 0px; list-style-type: none; }
+.markdown-preview ul ul, .markdown-preview[data-use-github-style] ul ul, .markdown-preview ul ol, .markdown-preview[data-use-github-style] ul ol, .markdown-preview ol ol, .markdown-preview[data-use-github-style] ol ol, .markdown-preview ol ul, .markdown-preview[data-use-github-style] ol ul { margin-top: 0px; margin-bottom: 0px; }
+.markdown-preview li > p, .markdown-preview[data-use-github-style] li > p { margin-top: 16px; }
+.markdown-preview dl, .markdown-preview[data-use-github-style] dl { padding: 0px; }
+.markdown-preview dl dt, .markdown-preview[data-use-github-style] dl dt { padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold; }
+.markdown-preview dl dd, .markdown-preview[data-use-github-style] dl dd { padding: 0px 16px; margin-bottom: 16px; }
+.markdown-preview blockquote, .markdown-preview[data-use-github-style] blockquote { padding: 0px 15px; color: rgb(119, 119, 119); border-left-width: 4px; border-left-style: solid; border-left-color: rgb(221, 221, 221); }
+.markdown-preview blockquote > :first-child, .markdown-preview[data-use-github-style] blockquote > :first-child { margin-top: 0px; }
+.markdown-preview blockquote > :last-child, .markdown-preview[data-use-github-style] blockquote > :last-child { margin-bottom: 0px; }
+.markdown-preview table, .markdown-preview[data-use-github-style] table { display: block; width: 100%; overflow: auto; word-break: normal; }
+.markdown-preview table th, .markdown-preview[data-use-github-style] table th { font-weight: bold; }
+.markdown-preview table th, .markdown-preview[data-use-github-style] table th, .markdown-preview table td, .markdown-preview[data-use-github-style] table td { padding: 6px 13px; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview table tr, .markdown-preview[data-use-github-style] table tr { border-top-width: 1px; border-top-style: solid; border-top-color: rgb(204, 204, 204); background-color: rgb(255, 255, 255); }
+.markdown-preview table tr:nth-child(2n), .markdown-preview[data-use-github-style] table tr:nth-child(2n) { background-color: rgb(248, 248, 248); }
+.markdown-preview img, .markdown-preview[data-use-github-style] img { max-width: 100%; box-sizing: border-box; }
+.markdown-preview .emoji, .markdown-preview[data-use-github-style] .emoji { max-width: none; }
+.markdown-preview span.frame, .markdown-preview[data-use-github-style] span.frame { display: block; overflow: hidden; }
+.markdown-preview span.frame > span, .markdown-preview[data-use-github-style] span.frame > span { display: block; float: left; width: auto; padding: 7px; margin: 13px 0px 0px; overflow: hidden; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview span.frame span img, .markdown-preview[data-use-github-style] span.frame span img { display: block; float: left; }
+.markdown-preview span.frame span span, .markdown-preview[data-use-github-style] span.frame span span { display: block; padding: 5px 0px 0px; clear: both; color: rgb(51, 51, 51); }
+.markdown-preview span.align-center, .markdown-preview[data-use-github-style] span.align-center { display: block; overflow: hidden; clear: both; }
+.markdown-preview span.align-center > span, .markdown-preview[data-use-github-style] span.align-center > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: center; }
+.markdown-preview span.align-center span img, .markdown-preview[data-use-github-style] span.align-center span img { margin: 0px auto; text-align: center; }
+.markdown-preview span.align-right, .markdown-preview[data-use-github-style] span.align-right { display: block; overflow: hidden; clear: both; }
+.markdown-preview span.align-right > span, .markdown-preview[data-use-github-style] span.align-right > span { display: block; margin: 13px 0px 0px; overflow: hidden; text-align: right; }
+.markdown-preview span.align-right span img, .markdown-preview[data-use-github-style] span.align-right span img { margin: 0px; text-align: right; }
+.markdown-preview span.float-left, .markdown-preview[data-use-github-style] span.float-left { display: block; float: left; margin-right: 13px; overflow: hidden; }
+.markdown-preview span.float-left span, .markdown-preview[data-use-github-style] span.float-left span { margin: 13px 0px 0px; }
+.markdown-preview span.float-right, .markdown-preview[data-use-github-style] span.float-right { display: block; float: right; margin-left: 13px; overflow: hidden; }
+.markdown-preview span.float-right > span, .markdown-preview[data-use-github-style] span.float-right > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: right; }
+.markdown-preview code, .markdown-preview[data-use-github-style] code, .markdown-preview tt, .markdown-preview[data-use-github-style] tt { padding: 0.2em 0px; margin: 0px; font-size: 85%; border-radius: 3px; background-color: rgba(0, 0, 0, 0.0392157); }
+.markdown-preview code::before, .markdown-preview[data-use-github-style] code::before, .markdown-preview tt::before, .markdown-preview[data-use-github-style] tt::before, .markdown-preview code::after, .markdown-preview[data-use-github-style] code::after, .markdown-preview tt::after, .markdown-preview[data-use-github-style] tt::after { letter-spacing: -0.2em; content: ' '; }
+.markdown-preview code br, .markdown-preview[data-use-github-style] code br, .markdown-preview tt br, .markdown-preview[data-use-github-style] tt br { display: none; }
+.markdown-preview del code, .markdown-preview[data-use-github-style] del code { text-decoration: inherit; }
+.markdown-preview pre > code, .markdown-preview[data-use-github-style] pre > code { padding: 0px; margin: 0px; font-size: 100%; word-break: normal; white-space: pre; border: 0px; background: transparent; }
+.markdown-preview .highlight, .markdown-preview[data-use-github-style] .highlight { margin-bottom: 16px; }
+.markdown-preview .highlight pre, .markdown-preview[data-use-github-style] .highlight pre, .markdown-preview pre, .markdown-preview[data-use-github-style] pre { padding: 16px; overflow: auto; font-size: 85%; line-height: 1.45; border-radius: 3px; background-color: rgb(247, 247, 247); }
+.markdown-preview .highlight pre, .markdown-preview[data-use-github-style] .highlight pre { margin-bottom: 0px; word-break: normal; }
+.markdown-preview pre, .markdown-preview[data-use-github-style] pre { word-wrap: normal; }
+.markdown-preview pre code, .markdown-preview[data-use-github-style] pre code, .markdown-preview pre tt, .markdown-preview[data-use-github-style] pre tt { display: inline; max-width: initial; padding: 0px; margin: 0px; overflow: initial; line-height: inherit; word-wrap: normal; border: 0px; background-color: transparent; }
+.markdown-preview pre code::before, .markdown-preview[data-use-github-style] pre code::before, .markdown-preview pre tt::before, .markdown-preview[data-use-github-style] pre tt::before, .markdown-preview pre code::after, .markdown-preview[data-use-github-style] pre code::after, .markdown-preview pre tt::after, .markdown-preview[data-use-github-style] pre tt::after { content: normal; }
+.markdown-preview kbd, .markdown-preview[data-use-github-style] kbd { display: inline-block; padding: 3px 5px; font-size: 11px; line-height: 10px; color: rgb(85, 85, 85); vertical-align: middle; border-style: solid; border-width: 1px; border-color: rgb(204, 204, 204) rgb(204, 204, 204) rgb(187, 187, 187); border-radius: 3px; box-shadow: rgb(187, 187, 187) 0px -1px 0px inset; background-color: rgb(252, 252, 252); }
+.markdown-preview, .markdown-preview[data-use-github-style], .markdown-preview code, .markdown-preview[data-use-github-style] code { color: rgb(51, 51, 51); }
+.markdown-preview h1, .markdown-preview[data-use-github-style] h1, .markdown-preview h2, .markdown-preview[data-use-github-style] h2, .markdown-preview h3, .markdown-preview[data-use-github-style] h3, .markdown-preview h4, .markdown-preview[data-use-github-style] h4, .markdown-preview h5, .markdown-preview[data-use-github-style] h5, .markdown-preview h6, .markdown-preview[data-use-github-style] h6 { -webkit-font-smoothing: antialiased; cursor: text; }
+.markdown-preview > h1:first-child, .markdown-preview[data-use-github-style] > h1:first-child, .markdown-preview > h1:first-child + h2, .markdown-preview[data-use-github-style] > h1:first-child + h2, .markdown-preview > h2:first-child, .markdown-preview[data-use-github-style] > h2:first-child, .markdown-preview > h3:first-child, .markdown-preview[data-use-github-style] > h3:first-child, .markdown-preview > h4:first-child, .markdown-preview[data-use-github-style] > h4:first-child, .markdown-preview > h5:first-child, .markdown-preview[data-use-github-style] > h5:first-child, .markdown-preview > h6:first-child, .markdown-preview[data-use-github-style] > h6:first-child { margin-top: 0px; padding-top: 0px; }
+.markdown-preview a, .markdown-preview[data-use-github-style] a, .markdown-preview a code, .markdown-preview[data-use-github-style] a code { color: rgb(65, 131, 196); }
+.markdown-preview a:first-child h1, .markdown-preview[data-use-github-style] a:first-child h1, .markdown-preview a:first-child h2, .markdown-preview[data-use-github-style] a:first-child h2, .markdown-preview a:first-child h3, .markdown-preview[data-use-github-style] a:first-child h3, .markdown-preview a:first-child h4, .markdown-preview[data-use-github-style] a:first-child h4, .markdown-preview a:first-child h5, .markdown-preview[data-use-github-style] a:first-child h5, .markdown-preview a:first-child h6, .markdown-preview[data-use-github-style] a:first-child h6 { margin-top: 0px; padding-top: 0px; }
+.markdown-preview h1 + p, .markdown-preview[data-use-github-style] h1 + p, .markdown-preview h2 + p, .markdown-preview[data-use-github-style] h2 + p, .markdown-preview h3 + p, .markdown-preview[data-use-github-style] h3 + p, .markdown-preview h4 + p, .markdown-preview[data-use-github-style] h4 + p, .markdown-preview h5 + p, .markdown-preview[data-use-github-style] h5 + p, .markdown-preview h6 + p, .markdown-preview[data-use-github-style] h6 + p { margin-top: 0px; }
+.markdown-preview li p.first, .markdown-preview[data-use-github-style] li p.first { display: inline-block; }
+.markdown-preview ul, .markdown-preview[data-use-github-style] ul { list-style-type: disc; }
+.markdown-preview ol, .markdown-preview[data-use-github-style] ol { list-style-type: decimal; }
+.markdown-preview ul li > :first-child, .markdown-preview[data-use-github-style] ul li > :first-child, .markdown-preview ol li > :first-child, .markdown-preview[data-use-github-style] ol li > :first-child, .markdown-preview ul li ul:first-of-type, .markdown-preview[data-use-github-style] ul li ul:first-of-type, .markdown-preview ol li ul:first-of-type, .markdown-preview[data-use-github-style] ol li ul:first-of-type { margin-top: 0px; }
+.markdown-preview ol > li, .markdown-preview[data-use-github-style] ol > li { list-style-type: inherit; }
+.markdown-preview ul > li, .markdown-preview[data-use-github-style] ul > li { list-style-type: inherit; }
+.markdown-preview dl dt:first-child, .markdown-preview[data-use-github-style] dl dt:first-child { padding: 0px; }
+.markdown-preview dl dt > :first-child, .markdown-preview[data-use-github-style] dl dt > :first-child { margin-top: 0px; }
+.markdown-preview dl dt > :last-child, .markdown-preview[data-use-github-style] dl dt > :last-child { margin-bottom: 0px; }
+.markdown-preview dl dd > :first-child, .markdown-preview[data-use-github-style] dl dd > :first-child { margin-top: 0px; }
+.markdown-preview dl dd > :last-child, .markdown-preview[data-use-github-style] dl dd > :last-child { margin-bottom: 0px; }
+.markdown-preview blockquote p, .markdown-preview[data-use-github-style] blockquote p { font-size: 16px; line-height: 1.5; }
+.markdown-preview pre.editor-colors, .markdown-preview[data-use-github-style] pre.editor-colors { padding: 16px; overflow: auto; font-size: 84%; line-height: 1.45; border-radius: 3px; /*background-color: rgb(21, 23, 24);*/ }
+.markdown-preview pre, .markdown-preview[data-use-github-style] pre, .markdown-preview pre.editor-colors, .markdown-preview[data-use-github-style] pre.editor-colors { margin-bottom: 16px; word-break: normal; }
+.markdown-preview pre, .markdown-preview[data-use-github-style] pre, .markdown-preview code, .markdown-preview[data-use-github-style] code, .markdown-preview tt, .markdown-preview[data-use-github-style] tt, .markdown-preview pre.editor-colors, .markdown-preview[data-use-github-style] pre.editor-colors { font-family: Consolas, 'Liberation Mono', Courier, monospace; }
+.markdown-preview .emoji, .markdown-preview[data-use-github-style] .emoji { height: 20px; width: 20px; }
+.markdown-preview del, .markdown-preview[data-use-github-style] del { text-decoration: none; position: relative; }
+.markdown-preview del::after, .markdown-preview[data-use-github-style] del::after { border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; content: ''; left: 0px; position: absolute; right: 0px; top: 50%; }
+.markdown-preview .flash, .markdown-preview[data-use-github-style] .flash { -webkit-animation: flash 1s ease-out 1; animation-duration: 1s; animation-timing-function: ease-out; animation-delay: initial; animation-direction: initial; animation-fill-mode: initial; -webkit-animation-play-state: initial; animation-play-state: initial; animation-name: flash; animation-iteration-count: 1; outline: rgba(255, 0, 0, 0) solid 1px; }
+.markdown-preview .flash:not(li), .markdown-preview[data-use-github-style] .flash:not(li) { display: block; }
+.bracket-matcher .region {
+  border-bottom: 1px dotted lime;
+  position: absolute;
+}
+
+.spell-check-misspelling .region {
+  border-bottom: 1px dashed rgba(250, 128, 114, 0.5);
+}
+
+.pre.editor-colors,
+.host {
+  background-color: #151718;
+  color: #f8f8f2;
+}
+.pre.editor-colors .invisible-character,
+.host .invisible-character {
+  color: rgba(197, 200, 198, 0.2);
+}
+.pre.editor-colors .indent-guide,
+.host .indent-guide {
+  color: rgba(255, 255, 255, 0.15);
+}
+.pre.editor-colors .wrap-guide,
+.host .wrap-guide {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.pre.editor-colors .gutter,
+.host .gutter {
+  background-color: #1c1f20;
+}
+.pre.editor-colors .gutter .cursor-line,
+.host .gutter .cursor-line {
+  background-color: #49483e;
+}
+.pre.editor-colors .line-number.cursor-line-no-selection,
+.host .line-number.cursor-line-no-selection {
+  background-color: #49483e;
+}
+.pre.editor-colors .invisible,
+.host .invisible {
+  color: #f8f8f2;
+}
+.pre.editor-colors .cursor,
+.host .cursor {
+  border-color: #f8f8f0;
+}
+.pre.editor-colors .selection .region,
+.host .selection .region {
+  background-color: #49483e;
+}
+.pre.editor-colors .search-results .marker .region,
+.host .search-results .marker .region {
+  background-color: transparent;
+  border: 1px solid #888888;
+}
+.pre.editor-colors .search-results .marker.current-result .region,
+.host .search-results .marker.current-result .region {
+  border: 1px solid #ffffff;
+}
+.pre.editor-colors .gfm .markup.heading,
+.host .gfm .markup.heading {
+  color: #A6E22E;
+  font-weight: bold;
+}
+.pre.editor-colors .gfm .markup.underline,
+.host .gfm .markup.underline {
+  color: #E6DB74;
+  text-decoration: underline;
+}
+.pre.editor-colors .gfm .bold,
+.host .gfm .bold {
+  font-weight: bold;
+}
+.pre.editor-colors .gfm .italic,
+.host .gfm .italic {
+  font-style: italic;
+}
+.pre.editor-colors .gfm .raw,
+.host .gfm .raw {
+  color: #66D9EF;
+}
+.pre.editor-colors .gfm .variable.list,
+.host .gfm .variable.list {
+  color: #F92672;
+  font-weight: bold;
+}
+.pre.editor-colors .gfm .link,
+.host .gfm .link {
+  color: #CCC;
+}
+.pre.editor-colors .gfm .link .entity,
+.host .gfm .link .entity {
+  color: #AE81FF;
+}
+.comment {
+  color: #75715E;
+}
+.string {
+  color: #E6DB74;
+}
+.constant.numeric {
+  color: #AE81FF;
+}
+.constant.language {
+  color: #AE81FF;
+}
+.constant.character,
+.constant.other {
+  color: #AE81FF;
+}
+.keyword {
+  color: #F92672;
+}
+.storage {
+  color: #F92672;
+}
+.storage.type {
+  font-style: italic;
+  color: #66D9EF;
+}
+.entity.name.class {
+  text-decoration: underline;
+  color: #A6E22E;
+}
+.entity.other.inherited-class {
+  font-style: italic;
+  text-decoration: underline;
+  color: #A6E22E;
+}
+.entity.name.function {
+  color: #A6E22E;
+}
+.entity.name.instance {
+  color: #66D9EF;
+}
+.variable.parameter {
+  font-style: italic;
+  color: #FD971F;
+}
+.entity.name.tag {
+  color: #F92672;
+}
+.entity.other.attribute-name {
+  color: #A6E22E;
+}
+.support.function {
+  color: #66D9EF;
+}
+.support.constant {
+  color: #66D9EF;
+}
+.support.type,
+.support.class {
+  font-style: italic;
+  color: #66D9EF;
+}
+.invalid {
+  color: #F8F8F0;
+  background-color: #F92672;
+}
+.invalid.deprecated {
+  color: #F8F8F0;
+  background-color: #AE81FF;
+}
+.class.jade {
+  color: #AE81FF;
+}
+</style>
+  </head>
+  <body class='markdown-preview'><h1>Ping/Pong protocol simulation</h1>
+<p>The goal of this project is to simulate the Ping/Pong protocol in a Gnutella network. The software aims to simulate this kind of protocol, and all the tests are performed with this purpose, but actually the general structure of the project can lead to future work, such as implementations of other Peer-to-Peer (P2P) protocols.</p>
+<center><img src="/home/luca/PingPongProtocol/img/example-small.jpg?v=1448873715088"><p><small>A possible output of the simulator</small></p></center>
+<p>Briefly, the software is based on an <em>infinite</em> loop during which peers are repeatedly asked to perform a task, usually popping some information out of a message queue and elaborating it. To better simulate this specific protocol the peers also have the possibility of setting up a time interval and performing an assigned task periodically.</p>
+<h1>Table of Contents</h1>
+<ul>
+<li><a href="#pingpong-protocol-simulation">Ping/Pong protocol simulation</a></li>
+<li><a href="#features">Features</a></li>
+<li><a href="#how-to-use-it">How To Use it</a>
+<ul>
+<li><a href="#requirements">Requirements:</a></li>
+<li><a href="#download-and-install">Download and Install</a></li>
+<li><a href="#how-to-run-it">How To Run it</a></li>
+</ul>
+</li>
+<li><a href="#key-points-in-the-pingpong-implementation">Key points in the Ping/Pong implementation</a>
+<ul>
+<li><a href="#on-demand-ping">On demand ping</a></li>
+<li><a href="#simple-pong-caching">Simple Pong Caching</a></li>
+<li><a href="#dynamic-pong-cache">Dynamic Pong Cache</a></li>
+</ul>
+</li>
+<li><a href="#implementation-details">Implementation Details</a>
+<ul>
+<li><a href="#topologygen">TopologyGen</a></li>
+<li><a href="#message">Message</a></li>
+<li><a href="#peer">Peer</a></li>
+<li><a href="#peer_p">Peer_p</a></li>
+<li><a href="#peer_pp">Peer_pp</a></li>
+</ul>
+</li>
+<li><a href="#statistics">Statistics</a></li>
+</ul>
+<h1>Features</h1>
+<ul>
+<li>Random peer topology generation, given the number of nodes and the probability of two nodes being connected.</li>
+<li>Probing and logging a set of specific peers, either onto the standard output or onto file(s).</li>
+<li>Simple json like configuration file.</li>
+<li>Two different operational modes: simulation with log printing of the behaviour of the peer or simple message analysis.</li>
+<li>Three type of implementation of the Ping/Pong protocol: <em>on demand</em>, with <em>simple caching</em> and <em>dynamic caching</em>.</li>
+<li>Simple Peer interface easily extendible with the onEvent methods.</li>
+</ul>
+<h1>How To Use it</h1>
+<h2>Requirements:</h2>
+<ul>
+<li>Linux system</li>
+<li>g++ &gt;= 4.8 with c++11 support</li>
+<li>cMake &gt;= 2.8</li>
+<li>libconfig++, on ubuntu/debian system just run <code>sudo apt-get update &amp;&amp; sudo apt-get install libconfig++8-dev -y</code></li>
+</ul>
+<h2>Download and Install</h2>
+<p>Download the last version of the software with git command or by downloading the zip file:</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>cd&nbsp;~</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>git&nbsp;clone&nbsp;...</span></span></span></div></pre>
+<p>Go inside the created directory and create the build folder where to compile the program:</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>mkdir&nbsp;build&nbsp;&amp;&amp;&nbsp;cd&nbsp;build</span></span></span></div></pre>
+<p>create the makefile with cmake and start the compilation:</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>cmake&nbsp;..</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>make</span></span></span></div></pre>
+<p>Now the simulator is correctly compiled and you can find three versions choose among the tree different implementations (as aforementioned) by selecting one of the executable within the <code>/bin</code> folder inside the <code>PingPongProtocol</code> directory:</p>
+<ul>
+<li><code>PingPongProtocol_v1</code> the first version without caching.</li>
+<li><code>PingPongProtocol_v2</code> the second version with simple caching.</li>
+<li><code>PingPongProtocol_v3</code> the third version with the dynamic caching.</li>
+</ul>
+<h2>How To Run it</h2>
+<p>To run one of the three simulations you have to create a configuration file or use one of the given examples. For instance you can run the simulation of the second version of the protocol by using the configuration file <code>topology_2.cfg</code>, with the following:</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>bin/PingPongProtocol_v2&nbsp;-c&nbsp;example/topology_2.cfg</span></span></span></div></pre>
+<p>That configuration file creates a random topology with 50 peers, 0.1 as connections probability and a seed of 234234324443334. Instead in the <em>logger</em> property is specified which peer has to be logged and where; in the specific example: only the peers 23, 10, 3 and 15 print out their logs, and respectively onto the standard output for the first couple and onto the file  <code>pippo.log</code> for the second couple. It is also specified that the random graph topology of the peers has to be written into the <code>topology.log</code> file.</p>
+<p>There are different selectable options in order to launch the executable: the <code>-c</code> that specifies a configuration file is given, the <code>-s</code> to specify the number of simulation steps to be run.</p>
+<p>To use the simulator only for printing the number of messages in the network and without any other additional information, for example to get some statistics, you can use instead the parameters:</p>
+<ul>
+<li><code>-n</code> number of nodes in the network</li>
+<li><code>-p</code> probability of connection between two peers</li>
+<li><code>-r</code> to sepcify the seed of the random generator.</li>
+</ul>
+<p>If you use at least one of the latter options, then all the printing information is disabled. A possible command in this sense can be:</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>bin/PingPongProtocal_v2&nbsp;-n&nbsp;1000&nbsp;-p&nbsp;0.1&nbsp;-s&nbsp;1000&nbsp;-r&nbsp;4815162342&nbsp;&nbsp;&nbsp;</span></span></span></div></pre>
+<p><strong>NOTE:</strong> if you have a 32bit system probably the program crash with a <em>SettingTypeException</em>. To solve this issue simply modify the <em>srand</em> parameter in the configuration file with a shorter number and without the final L.</p>
+<h1>Key points in the Ping/Pong implementation</h1>
+<p>In this section we will skim through all the key ideas behind the implementation of the three versions of the Ping/Pong protocol. In general we can say that all the simulation is about the raw communication of the peer and how the messages are distributed in the network; for this reasons there is no kind of simulation for what concerns the connection via sockets nor for the error occurring during network communication.</p>
+<h2>On demand ping</h2>
+<p>In the following, the base structure of the Ping/Pong protocol is described in its details. Each peer is programmatically triggered and broadcasts a ping message to its neighbours, this is done by invoking the method <code>putMessage(Message)</code> which pushes a new message on the receiver peer queue. Then all the peer that receive a Ping respond with a Pong and forward the ping to their neighbours.</p>
+<p>An important aspect is how the Pong messages are routed back towards the original sender of the ping. To achieve this a HashMap is exploited to store the original sender of every received Ping message. This structure adopts as key the id of the message and as value the UID (Unified Identifier) of the peer that has sent that message (in general it can be different from the original sender). In this way the peers can perform backward routing hop-by-hop for the Pong to reach the original sender. Here is the definition of the HashMap:</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>std::unordered_map&lt;int,&nbsp;int&gt;&nbsp;pingTable;</span></span></span></div></pre>
+<p>It is important to consider that the access to this structure is constant in time, so that a minimal overhead is paid every time the node receives a Pong.</p>
+<p>The same structure is also used to recognise the Ping sent by the peer itself or its answer Pong, in fact each time a peer sends a new ping it inserts it into the pingTable the id of the message and a constant -1 (to recall that the message was generated at that peer).
+Doing so, it is possible to perform some other check during the ping forwarding, to improve the effectiveness of the broadcast and to reduce content replication, i.e.:</p>
+<ul>
+<li>already forwarded pings are not forwarded (it is possible that there is a cycle in the peer graph),</li>
+<li>both pings and pongs generated at one peer are recognised by that specific peer and retained from forwarding.</li>
+</ul>
+<h2>Simple Pong Caching</h2>
+<p>This version of the peer has all the structure explained before for the on demand ping, but it also includes these features:</p>
+<ul>
+<li>the ping are sent after a variable number of seconds (by default between 5 and 30 seconds)</li>
+<li>the peer exploits a cache of Pongs, thus avoiding to forward every time all every incoming ping messages to its neighbours.</li>
+</ul>
+<p>The implementation of the pongCache is driven by the idea to have a faster data structure with constant time for insertion and retrieval, because it needs to be accessed every time a peer receives a new ping from the network.</p>
+<p>Practically the structure is a HashMap of HashMap, to exploit the constant access time to retrieve the cache entry for one of the neighbor and to avoid replication of the Pong of the original sender.</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>std::unordered_map&lt;int,&nbsp;//&nbsp;neighbor&nbsp;id</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>std::unordered_map&lt;int,&nbsp;//&nbsp;original&nbsp;sender</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="meta paragraph text"><span>unique_ptr&lt;Message&gt;&gt;&gt;&nbsp;pongCache;</span></span></span></div></pre>
+<p>So logically the structure can be considered as a set of many distinct caches, one for each neighbour, in which there are key-value pairs, with the original sender of the message and the message itself.</p>
+<p>To clarify this type of structure we can analyse the behaviour of the cache when it is filled by incoming pongs and when this pongs are retrieved and sent back to the requester.</p>
+<p>First of all, every time a new Pong arrives from one of the incoming links this new message is saved in the cache of that neighbor using the UID of the original sender as second index of the structure. Consequently, every time a new Pong from the same sender is received, it overrides the older one without introducing any data duplication.</p>
+<p>In the other case, when a new Ping arrives from one of the neighbours, a loop starts over the cache and if at least one message is present on that cache, it will be sent back to the requester , without forwarding the ping. Otherwise, for empty cache entries, the classic behaviour is implemented.</p>
+<h2>Dynamic Pong Cache</h2>
+<p>This version of the peer has all the cache facility of the previous versions, but improves the system with a dynamic cache where every entry is deleted after a number of seconds (by default 60). To add this new feature the previous cache structure is kept untouched and a LinkedList is added  where to put all the time information needed by the filtering process.</p>
+<p>More in detail every time the peer receives a Pong it stores it in the pongCache as in the previous example, but now it also adds a new entry at the end of the timeList, with the the timestamp generated by adding the actual time to the default expiring value of 60 seconds. In this way the list is kept ordered on the timestamps of the cache entries.</p>
+<p>Then, every 30 seconds by default the filtering process of the cache starts and the list is scanned to find elements with a time stamp less of the actual time. When a entry with this characteristic is found the system uses the information stored inside the linked list node to remove the cache entry in the pongCache and also the entry in the timeList is popped out. It can be easily seen that the filtering process can be stopped before that all the list is scanned since when a list node with a greater time stamp of the actual time is found, no other node with a smaller time stamp can be found in the (ordered) list.</p>
+<h1>Implementation Details</h1>
+<p>In this section we will see more in detail the structure of the classes with a deep description of the most relevant parts of them.
+The main class in the project are: <code>TopologyGen</code>, that manage and generate the peer structure, <code>Peer</code> that represent a peer entity and <code>Message</code> that simulate the structure of the Ping/Pong message with the needed information.
+Finally there are same utility class as the <code>ArgsParser</code> to read the argument of the command line and the <code>Logger</code> used to probe and log the activity of a set of peers.</p>
+<h2>TopologyGen</h2>
+<p>This class generates and manages the peer topology, it can random create a peer topology given a configuration file or a set of parameters, but it can also receive an already define vector of peers. Here are the main constructor:</p>
+<ul>
+<li>
+<p><code>TopologyGen(vector&lt;shared_ptr&lt;Peer&gt;&gt; peers_list)</code> create a TopologyGen object given an already define vector of Peers.</p>
+</li>
+<li>
+<p><code>TopologyGen(Config&amp; configuration_file)</code>  create a TopologyGen object given a configuration file, it use the parameters in the configuration file to create a random topology.</p>
+</li>
+<li>
+<p><code>TopologyGen(int n_of_node, double connection, long r_seed)</code>  create a topologyGen object manually given the number of nodes, the probability of connection and a random seed.</p>
+</li>
+</ul>
+<p>After the creation of the object is possible to interact with the peer by the following method:</p>
+<ul>
+<li>
+<p><code>void simulate(function&lt;void(Peer&amp;)&gt; call_back)</code> this is the main interface with the peers, this function execute one cycle of simulation among the peers, and after execute the callback function. There are other version of this function in witch is possible to specified, how much work each peer have to compute, and a sleep time between the execution of each peer.</p>
+</li>
+<li>
+<p><code>void startPing(int p)</code> manually trigger a given peer to send a ping message to all its neighbor, it is used in the <em>on demand</em> version of the Ping/Pong.</p>
+</li>
+<li>
+<p><code>void print()</code> this function just print the topology structure of the peers.</p>
+</li>
+</ul>
+<h2>Message</h2>
+<p>This class represent the actual message exchanged between the peers. It don’t have the exact structure of the PING/PONG message, but keep all the information needed to simulate the same behavior. The actual field are:</p>
+<ul>
+<li><code>int id</code> the unique id of the message.</li>
+<li><code>MsgType type</code> the type of the message: <code>PING</code> or <code>PONG</code></li>
+<li><code>int TTL</code> the time to live of the message by default it is set to 4</li>
+<li><code>int HOPS</code> the hops that the message did, how many peer it traverses</li>
+<li><code>int originalSender</code> it represents the id of the peer that generate the message.</li>
+<li><code>int lastSender</code> it represent the previous hop sender, in other words the neighbor that send the message to the peer. In a real protocol implementation this information can be taken by the socket connection information, but this simulation each entry in the queue are identically so it is important to distinguish witch neighbor put that message.</li>
+</ul>
+<h2>Peer</h2>
+<p>It is the class specifying all the characteristic of a peer in the network, it have a list of connected peers, and a message queue where the other peers can put messages. It can be created by the following constructor:</p>
+<ul>
+<li>
+<p><code>Peer()</code> create a new Peer with a unique id.</p>
+</li>
+<li>
+<p><code>Peer(int uid, shared_ptr&lt;Logger&gt; l)</code> create a new instance with a specific id and a Logger object</p>
+</li>
+<li>
+<p><code>Peer(shared_ptr&lt;Logger&gt; l)</code> create a new instance with a Logger.</p>
+</li>
+<li>
+<p><code>void work(int time_quanto)</code> this method run for a number of time set by the parameter <code>time_quanto</code> the work of the peer. When invoked basically the peer first check if one of is timer are elapsed and then pop a number of message equal to the parameter <code>time_quanto</code> from the queue, and then work on it.</p>
+</li>
+<li>
+<p><code>void putMessage(unique_ptr&lt;Message&gt; msg)</code> put a new message in the queue of the peer.</p>
+</li>
+<li>
+<p><code>void sendPing()</code> trigger the peer to broadcast a new ping message to all their neighbor.</p>
+</li>
+<li>
+<p><code>bool addNeighbor(shared_ptr&lt;Peer&gt; p)</code> add a new neighbor to the peer, this method simulate a bidirectional connection to a new peer. In this way after the executing of this method both the peers will have in their neighbor list the new connection.</p>
+</li>
+</ul>
+<p>In the Peer class there is also other event based method used to implement the actual behavior of the Ping/Pong protocol. This method are actually the one extended by the <code>Peer_p</code> an <code>Peer_pp</code> class. More in detail we can see:</p>
+<ul>
+<li>
+<p><code>virtual void onValidPing(unique_ptr&lt;Message&gt; msg , int sender_neighbor)</code> and <code>virtual void onValidPong(unique_ptr&lt;Message&gt; msg, int sender_neighbor)</code> called when the peer receives a valid Ping or Pong (the TTL is not 0) with the received message and the neighbor that send it.</p>
+</li>
+<li>
+<p><code>virtual void onErrorMsg(unique_ptr&lt;Message&gt; msg, ErrorType error, int neighbor)</code> called when a not valid message is sent to the peer, it contains a <code>ErrorType</code> that represent the specific error of the message. It can be one of the following:</p>
+<ul>
+<li>
+<p><code>ALREADY_FORWARDED_PING</code> received a ping that is already forwarded and already is in my ping table.</p>
+</li>
+<li>
+<p><code>UNOKNOW_PONG</code> received a Pong for witch there isn’t information in the ping table, so the routing back information is missing.</p>
+</li>
+<li>
+<p><code>EXPIRED_MSG</code> the message received have a expired TTL.</p>
+</li>
+<li>
+<p><code>MY_PING</code> receive my Ping</p>
+</li>
+<li>
+<p><code>MY_PONG</code> receive my Pong, so actually it is good, it is here only to have a more general structure of the system.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Peer_p</h2>
+<p>This class extended <code>Peer</code> and add a Pong cache with the possibility to exploit the previous Pong instead of broadcast every time the Ping. This is implemented by the following method called when a valid Ping or Pong are received:</p>
+<ul>
+<li>
+<p><code>virtual bool addPongCache(int neighbor, unique_ptr&lt;Message&gt; msg)</code> this store a message in the pongCache using the neighbor_id as key of the HashMap, to achieve constant time retrieve.</p>
+</li>
+<li>
+<p><code>virtual void sendChachedPong(int to,unique_ptr&lt;Message&gt; msg)</code> if at least one message is in the pong cache, send this pong without broadcast the ping. If no message are found in the cache the ping is regularly broadcast to the neighbor.</p>
+</li>
+</ul>
+<h2>Peer_pp</h2>
+<p>This class extended the <code>Peer_p</code> and add a linked list in witch store the time stamp of every cache entry. The node store inside the list have the following field:</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>struct&nbsp;ListNode&nbsp;{</span></span></span></div><div class="line"><span class="text plain"><span>&nbsp;&nbsp;</span><span class="meta paragraph text"><span>time_t&nbsp;tstamp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//time&nbsp;stamp&nbsp;of&nbsp;the&nbsp;entry</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;int&nbsp;&nbsp;&nbsp;&nbsp;original_sender;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;int&nbsp;&nbsp;&nbsp;&nbsp;neighbor_id;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>&nbsp;&nbsp;int&nbsp;&nbsp;&nbsp;&nbsp;msg_id;</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>};</span></span></span></div></pre>
+<p>Extending the on <code>addPongCache</code> method of the <code>Peer_p</code> class each time a new pong is added to the cache is also add at the end of the list a new entry of the ListNode struct. The list in this way is organize with ordered time stamp.
+Then to add the capability to send the Pong store in the cache only if they are more that K, also the method <code>sendChachedPong</code> of the class <code>Peer_p</code> was extended.</p>
+<p>This class add also another timeout that by default every 60 second check and clear the cache entry, as it is describe in the previous section.</p>
+<h1>Statistics</h1>
+<p>One of the aim of this project is to run same analysis on the Ping/Pong protocol and the implemented cache system. For this reason the analyses take care of the number of message that flood the network in the different implementations. Obviously the first implementation of the protocol, the on-demand ping, is not confrontable with the other because the peer doesn’t periodically generate ping message.</p>
+<p>Anyway all analysis are done on random network of different number of peers, from 100 to 1000, the connection probability is set to 0.1 and the simulation runs 2000 steps.</p>
+<p>In this first graph we have plot the the distribution of the message in the on-demand implementation. In this analysis only one peer is triggered to send the ping message and the total number of message are counted, considering either Ping and Pong.</p>
+<center><img src="/home/luca/PingPongProtocol/img/plot_ondemand.png?v=1448873715088"></center>
+<p>In this second graph we have plot the comparison of the two cache implementations when the number of nodes grows.
+We can see that those curves are similar to each other, but for the same number of peer the final implementation have alway less number of message that flood the network.</p>
+<center><img src="/home/luca/PingPongProtocol/img/plot_cache.png?v=1448873715088"></center>
+<p>Possible the improvement of the last version can be actually better of this if we consider a dynamic network, where the cache expiring system can is actually better than the second version. But never than less the use of the cache when we have at least K=4 element can achieve a better performance.</p></body>
+</html>
