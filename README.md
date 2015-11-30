@@ -213,13 +213,13 @@ One of the aim of this project is to run same analysis on the Ping/Pong protocol
 
 Anyway all analysis are done on random network of different number of peers, from 100 to 1000, the connection probability is set to 0.1 and the simulation runs 2000 steps.
 
-In this first graph we have plot the the distribution of the message in the on-demand implementation. This analysis only a peer is triggered and so it sends a ping to all its neighbor an wait for the corresponding Pong.
+In this first graph we have plot the the distribution of the message in the on-demand implementation. In this analysis only one peer is triggered to send the ping message and the total number of message are counted, considering either Ping and Pong.
 
 <center><img src="img/plot_ondemand.png"/></center>
 
-In this second graph we have plot the comparison of the two cache implementations when the number of nodes grouse.
+In this second graph we have plot the comparison of the two cache implementations when the number of nodes grows.
 We can see that those curves are similar to each other, but for the same number of peer the final implementation have alway less number of message that flood the network.
 
 <center><img src="img/plot_cache.png"/></center>
 
-Possible the improvement of the last version van be actually better of this if we consider a dynamic network, where the cache expiring system can is actually better than the second version. But never than less the use of the cache when we have at least K=4 element can achieve a better performance.
+Possible the improvement of the last version can be actually better of this if we consider a dynamic network, where the cache expiring system can is actually better than the second version. But never than less the use of the cache when we have at least K=4 element can achieve a better performance.
